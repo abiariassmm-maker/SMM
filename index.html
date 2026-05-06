@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brief &amp; Cotizador &middot; Social Media</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ink:#1a1a2e;--ink-soft:#4a4a6a;--ink-muted:#8888aa;
+  --accent:#b5db59;--accent-light:#fceef7;--accent-pink:#ffccef;--accent-pink-light:#fff0f9;--accent-dark:#7ab82e;
+  --green:#2D6A4F;--green-light:#D8EDE4;
+  --purple:#4A3F6B;--purple-light:#EAE6F5;
+  --teal:#1D6A6A;--teal-light:#D8EEEE;
+  --surface:#fafaf7;--surface-card:#ffffff;
+  --border:#e8e8e0;--border-strong:#d0d0c0;
+  --radius:14px;--radius-sm:8px;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--surface);color:var(--ink);min-height:100vh;}
+
+/* ── VIEWS ─────────────────────────────────────── */
+.view{display:none;}
+.view.active{display:block;}
+
+/* ── HERO (brief) ──────────────────────────────── */
+.hero-brief{background:#fceef7;padding:60px 40px 50px;position:relative;overflow:hidden;}
+.hero-brief::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(181,219,89,0.65);pointer-events:none;z-index:0;}
+.hero-brief::after{content:'';position:absolute;bottom:-80px;left:20%;width:200px;height:200px;border-radius:50%;background:rgba(181,219,89,0.45);pointer-events:none;z-index:0;}
+.hero-tag{position:relative;z-index:1;display:inline-block;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:#1a1a2e;background:var(--accent-pink);padding:5px 12px;border-radius:20px;margin-bottom:20px;}
+.hero-brief h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,48px);font-weight:600;color:#1A1A18;position:relative;z-index:1;line-height:1.15;max-width:560px;margin-bottom:16px;position:relative;z-index:1;}
+.hero-brief p{color:#1A1A18;position:relative;z-index:1;font-size:15px;font-weight:300;line-height:1.7;max-width:480px;position:relative;z-index:1;}
+
+/* ── HERO (cotizador + recomendacion) ─────────── */
+.hero-cot{background:var(--accent-light);padding:56px 32px 48px;text-align:center;position:relative;overflow:hidden;}
+.hero-cot>*{position:relative;z-index:1;}
+.hero-cot::before{content:'';position:absolute;top:-60px;right:-60px;width:240px;height:240px;border-radius:50%;background:rgba(181,219,89,.65);pointer-events:none;z-index:0;}
+.hero-cot::after{content:'';position:absolute;bottom:-80px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(181,219,89,.45);pointer-events:none;z-index:0;}
+.hero-cot-eyebrow{font-size:11px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:#1A1A18;margin-bottom:14px;}
+.hero-cot h1{font-family:'Playfair Display',serif;font-size:clamp(26px,4vw,40px);font-weight:600;color:#1A1A18;line-height:1.15;margin-bottom:12px;}
+.hero-cot h1 em{font-style:italic;}
+.hero-cot p{font-size:14px;color:#1A1A18;max-width:460px;margin:0 auto;line-height:1.7;}
+
+/* ── PROGRESS ──────────────────────────────────── */
+.progress-wrap{background:#fff;padding:16px 40px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;box-shadow:0 1px 8px rgba(0,0,0,.05);}
+.progress-bar-bg{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:var(--accent-pink);border-radius:99px;transition:width .4s ease;width:0%;}
+.progress-label{font-size:12px;color:var(--ink-muted);white-space:nowrap;font-weight:500;}
+
+/* ── FORM ──────────────────────────────────────── */
+.form-body{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+.section{margin-bottom:48px;}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--border);}
+.section-num{width:34px;height:34px;border-radius:50%;background:var(--accent-pink);color:#1a1a2e;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.section-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink);}
+.section-subtitle{font-size:13px;color:var(--ink-muted);margin-top:2px;}
+.field-group{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+.field-group.full{grid-template-columns:1fr;}
+.field-group.triple{grid-template-columns:1fr 1fr 1fr;}
+@media(max-width:600px){.field-group,.field-group.triple{grid-template-columns:1fr;}}
+.field{display:flex;flex-direction:column;gap:6px;}
+label{font-size:13px;font-weight:500;color:var(--ink-soft);letter-spacing:.01em;}
+label .req{color:var(--accent-pink);margin-left:2px;}
+label .hint{display:block;font-size:12px;font-weight:400;color:var(--ink-muted);margin-top:2px;line-height:1.4;}
+input[type="text"],input[type="email"],input[type="url"],input[type="number"],select,textarea{width:100%;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:400;color:var(--ink);background:var(--surface-card);border:1.5px solid var(--border);border-radius:10px;padding:10px 14px;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;}
+input:focus,select:focus,textarea:focus{border-color:var(--accent-pink);box-shadow:0 0 0 3px rgba(255,204,239,.3);}
+textarea{resize:vertical;min-height:90px;line-height:1.6;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238888aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;}
+.pill-group{display:flex;flex-wrap:wrap;gap:8px;}
+.pill-group input[type="checkbox"]{display:none;}
+.pill-group label{font-size:13px;font-weight:400;color:var(--ink-soft);background:var(--surface-card);border:1.5px solid var(--border);border-radius:99px;padding:7px 16px;cursor:pointer;transition:all .18s;user-select:none;letter-spacing:0;}
+.pill-group input[type="checkbox"]:checked+label{background:var(--accent-pink);border-color:var(--accent-pink);color:#1a1a2e;}
+.radio-card-group{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;}
+.radio-card input[type="radio"]{display:none;}
+.radio-card label{display:block;padding:14px 16px;border:1.5px solid var(--border);border-radius:12px;cursor:pointer;transition:all .18s;text-align:center;font-size:13px;font-weight:400;color:var(--ink-soft);background:var(--surface-card);letter-spacing:0;}
+.radio-card label .rc-icon{display:block;font-size:22px;margin-bottom:6px;}
+.radio-card input[type="checkbox"]:checked+label,.radio-card input[type="radio"]:checked+label{border-color:var(--accent-dark);background:var(--accent-light);color:#4a7a2e;font-weight:500;}
+.range-wrap{display:flex;align-items:center;gap:14px;}
+input[type="range"]{flex:1;-webkit-appearance:none;height:4px;background:var(--border);border-radius:99px;border:none;box-shadow:none;padding:0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--accent-pink);border-radius:50%;cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);}
+.range-val{font-size:15px;font-weight:500;color:var(--accent-pink);min-width:50px;text-align:right;}
+.divider{border:none;border-top:1px dashed var(--border);margin:24px 0;}
+.info-box{background:var(--accent-pink-light);border-left:3px solid var(--accent-pink);border-radius:0 10px 10px 0;padding:12px 16px;font-size:13px;color:var(--ink-soft);margin-bottom:20px;line-height:1.6;}
+.network-block{background:var(--surface-card);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;}
+.network-block-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.net-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+.net-dot.ig{background:#c13584;}.net-dot.tt{background:#010101;}.net-dot.fb{background:#1877f2;}
+.submit-area{background:var(--surface-card);border:1.5px solid var(--border);border-radius:20px;padding:32px 36px;text-align:center;margin-top:40px;}
+.submit-area h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);margin-bottom:8px;}
+.submit-area p{font-size:14px;color:var(--ink-muted);margin-bottom:24px;line-height:1.6;}
+.btn-submit{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#1a1a2e;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;padding:14px 36px;border:none;border-radius:99px;cursor:pointer;transition:background .2s,transform .15s;letter-spacing:.01em;}
+.btn-submit:hover{background:#a0cb40;transform:translateY(-1px);}
+.btn-submit:active{transform:scale(.98);}
+input.invalid,select.invalid,textarea.invalid{border-color:#e24b4a;box-shadow:0 0 0 3px rgba(226,75,74,.1);}
+.error-msg{font-size:12px;color:#c0392b;margin-top:3px;display:none;}
+.error-msg.show{display:block;}
+
+/* ── POPUP CHOICE ───────────────────────────────── */
+.popup-overlay{position:fixed;inset:0;background:rgba(26,26,46,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+.popup-overlay.open{display:flex;animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.popup-box{background:#ffffff;border-radius:20px;width:100%;max-width:520px;padding:36px;position:relative;animation:popIn .28s ease;}
+@keyframes popIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+.popup-icon-big{font-size:42px;text-align:center;margin-bottom:16px;}
+.popup-box h2{font-family:'Playfair Display',serif;font-size:24px;color:var(--ink);text-align:center;margin-bottom:8px;}
+.popup-box p{font-size:14px;color:var(--ink-muted);text-align:center;line-height:1.7;margin-bottom:28px;}
+.popup-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:480px){.popup-choices{grid-template-columns:1fr;}}
+.choice-btn{padding:20px 16px;border-radius:var(--radius);border:2px solid var(--border);background:#fff;cursor:pointer;text-align:center;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.choice-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);}
+.choice-btn.primary{border-color:var(--accent);background:var(--accent);}
+.choice-btn.primary:hover{background:#a0cb40;}
+.choice-btn.secondary{border-color:var(--accent-pink);background:var(--accent-pink-light);}
+.choice-icon{font-size:28px;display:block;margin-bottom:8px;}
+.choice-title{font-size:14px;font-weight:500;color:var(--ink);display:block;margin-bottom:4px;}
+.choice-desc{font-size:12px;color:var(--ink-muted);line-height:1.4;}
+
+/* ── LOADING ─────────────────────────────────────── */
+.loading-screen{text-align:center;padding:80px 24px;}
+.spinner{width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;margin:0 auto 24px;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-screen h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);margin-bottom:8px;}
+.loading-screen p{font-size:14px;color:var(--ink-muted);line-height:1.6;}
+
+/* ── RECOMMENDATION VIEW ────────────────────────── */
+.rec-container{max-width:760px;margin:0 auto;padding:40px 24px 80px;}
+.rec-analysis{background:var(--accent-pink-light);border:1.5px solid rgba(255,204,239,.6);border-radius:var(--radius);padding:24px 28px;margin-bottom:32px;}
+.rec-analysis-label{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;}
+.rec-analysis-text{font-size:15px;color:var(--ink);line-height:1.8;}
+.rec-services-title{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);margin-bottom:6px;}
+.rec-services-sub{font-size:13px;color:var(--ink-muted);margin-bottom:20px;}
+.rec-card{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:16px 20px;margin-bottom:10px;display:flex;gap:16px;align-items:flex-start;}
+.rec-card.highlight{border-color:var(--accent);background:#f7fde8;}
+.rec-check{width:26px;height:26px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;}
+.rec-check svg{width:13px;height:13px;}
+.rec-card-body{flex:1;}
+.rec-card-name{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:3px;}
+.rec-card-reason{font-size:13px;color:var(--ink-soft);line-height:1.5;}
+.rec-card-right{text-align:right;flex-shrink:0;}
+.rec-price{font-family:'Playfair Display',serif;font-size:20px;color:var(--ink);}
+.rec-price-sub{font-size:11px;color:var(--ink-muted);}
+.rec-note{background:#fceef7;border:1.5px solid rgba(181,130,170,.25);border-radius:var(--radius-sm);padding:14px 18px;margin:16px 0;font-size:13px;color:var(--ink);line-height:1.6;display:flex;gap:10px;align-items:flex-start;}
+.rec-totals{background:var(--accent);border-radius:var(--radius);padding:24px 28px;margin-top:24px;}
+.rec-totals-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:16px;}
+.rec-total-label{font-size:11px;color:rgba(26,26,46,.6);margin-bottom:4px;}
+.rec-total-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--ink);}
+.rec-total-sub{font-size:11px;color:rgba(26,26,46,.5);margin-top:2px;}
+.rec-totals-divider{border:none;border-top:1px solid rgba(26,26,46,.15);margin:16px 0;}
+.rec-closing{font-size:14px;color:rgba(26,26,46,.7);line-height:1.7;margin-bottom:20px;}
+.rec-actions{display:flex;flex-direction:column;gap:12px;}
+.btn-rec-primary{display:block;width:100%;padding:14px;border-radius:var(--radius-sm);background:#fff;color:#1a1a2e;font-size:14px;font-weight:500;text-align:center;border:1.5px solid rgba(26,26,46,.2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-rec-primary:hover{background:#f5f5f5;}
+.btn-wa-rec{display:block;width:100%;padding:14px;border-radius:var(--radius-sm);background:#fff;color:#1a1a2e;font-size:14px;font-weight:500;text-align:center;text-decoration:none;font-family:'DM Sans',sans-serif;transition:all .15s;border:1.5px solid rgba(26,26,46,.2);}
+.btn-wa-rec:hover{background:#f5f5f5;}
+.btn-rec-secondary{display:block;width:100%;margin-top:10px;padding:14px;border-radius:var(--radius-sm);background:#fff;color:#1a1a2e;font-size:13px;font-weight:500;text-align:center;border:1.5px solid rgba(26,26,46,.2);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;}
+.btn-rec-secondary:hover{background:#f5f5f5;}
+.tag-sm{font-size:10px;font-weight:500;padding:2px 8px;border-radius:999px;white-space:nowrap;display:inline-block;}
+.tag-rec-sm{background:var(--green-light);color:var(--green);}
+.tag-one-sm{background:var(--purple-light);color:var(--purple);}
+.tag-unit-sm{background:#ffeef8;color:#7a2d5e;}
+
+/* ── COTIZADOR ──────────────────────────────────── */
+.cot-container{max-width:860px;margin:0 auto;padding:40px 20px 80px;}
+.section-label-cot{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);margin-bottom:10px;}
+.plat-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:32px;}
+.plat-card{flex:1;min-width:130px;border:1.5px solid rgba(26,26,46,.18);border-radius:var(--radius);padding:14px 16px;cursor:pointer;background:#fff;transition:all .2s;display:flex;align-items:center;gap:10px;}
+.plat-card:hover{border-color:var(--accent);}
+.plat-card.active{border-color:var(--accent);background:var(--accent-light);}
+.plat-card.active-both{border-color:var(--teal);background:var(--teal-light);}
+.plat-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.plat-icon.ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+.plat-icon.tt{background:#010101;}.plat-icon.both{background:linear-gradient(135deg,#1D6A6A,#2D6A4F);}
+.plat-name{font-size:14px;font-weight:500;}.plat-sub{font-size:11px;color:var(--ink-muted);}
+.wa-banner-cot{display:none;background:var(--green-light);border:1.5px solid rgba(45,106,79,.25);border-radius:var(--radius);padding:16px 20px;align-items:center;gap:14px;margin-bottom:28px;animation:slideIn .3s ease;}
+.wa-banner-cot.show{display:flex;}
+@keyframes slideIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+.wa-circle{width:40px;height:40px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wa-circle svg{width:22px;height:22px;fill:#fff;}
+.wa-text-cot{flex:1;font-size:13px;color:#1A3D2E;line-height:1.5;}
+.wa-cta-cot{font-size:13px;font-weight:500;padding:8px 18px;border-radius:999px;background:var(--green);color:#fff;border:none;cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block;}
+.grabacion-notice{display:none;background:#fceef7;border:1.5px solid rgba(181,130,170,.3);border-radius:var(--radius);padding:14px 18px;align-items:center;gap:12px;margin-bottom:20px;animation:slideIn .3s ease;}
+.grabacion-notice.show{display:flex;}
+.discount-bar{background:var(--accent-light);border:1.5px solid var(--ink);border-radius:var(--radius);padding:18px 22px;margin-bottom:24px;transition:all .3s;}
+.discount-bar.active-discount{border-color:var(--ink);background:var(--accent-light);}
+.disc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.disc-title{font-size:13px;font-weight:500;color:var(--ink);}
+.disc-badge{font-size:13px;font-weight:500;padding:4px 14px;border-radius:999px;background:var(--ink);color:#fff;transition:all .3s;}
+.disc-badge.earned{background:var(--accent);color:var(--ink);}
+.disc-tiers{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.disc-tier{flex:1;min-width:80px;text-align:center;padding:8px 6px;border-radius:var(--radius-sm);border:1.5px solid var(--ink,.1);background:#fff;transition:all .3s;}
+.disc-tier.reached{border-color:var(--ink);background:var(--accent-light);}
+.disc-tier-pct{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);transition:color .3s;}
+.disc-tier.reached .disc-tier-pct{color:var(--ink);}
+.disc-tier-label{font-size:10px;color:var(--ink);margin-top:2px;}
+.disc-track{height:6px;background:rgba(26,26,46,.1);border-radius:999px;overflow:hidden;}
+.disc-fill{height:100%;background:var(--accent);border-radius:999px;transition:width .4s ease;}
+.disc-hint{font-size:11px;color:var(--ink);margin-top:8px;}
+.disc-hint strong{color:var(--ink);}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px;}
+.filter-btn{font-size:12px;font-weight:500;padding:6px 16px;border-radius:999px;border:1.5px solid rgba(26,26,46,.18);background:transparent;color:var(--ink-soft);cursor:pointer;transition:all .15s;}
+.filter-btn:hover{border-color:var(--accent);color:var(--ink);}
+.filter-btn.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.services-grid{display:flex;flex-direction:column;gap:6px;margin-bottom:32px;}
+.section-header-cot{font-size:11px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-muted);padding:8px 0 6px;border-bottom:1px solid rgba(26,26,46,.1);margin-bottom:8px;margin-top:8px;}
+.service-card{background:#fff;border:1.5px solid rgba(26,26,46,.1);border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;gap:14px;transition:all .18s;user-select:none;}
+.service-card.clickable{cursor:pointer;}
+.service-card.clickable:hover{border-color:rgba(26,26,46,.25);}
+.service-card.selected{border-color:var(--accent);background:var(--accent-light);}
+.service-card.auto-selected{border-color:var(--green);background:var(--green-light);}
+.service-card.always-included{border-color:var(--green);background:var(--green-light);}
+.check-box{width:22px;height:22px;border-radius:6px;border:1.5px solid rgba(26,26,46,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:#fff;}
+.service-card.selected .check-box{background:var(--accent);border-color:var(--accent);}
+.service-card.auto-selected .check-box,.service-card.always-included .check-box{background:var(--green);border-color:var(--green);}
+.check-box svg{display:none;}
+.service-card.selected .check-box svg,.service-card.auto-selected .check-box svg,.service-card.always-included .check-box svg{display:block;}
+.svc-info{flex:1;min-width:0;}
+.svc-name{font-size:14px;font-weight:500;margin-bottom:2px;}
+.svc-desc{font-size:12px;color:var(--ink-muted);line-height:1.4;}
+.svc-includes{font-size:11px;color:var(--teal);font-style:italic;margin-top:2px;}
+.svc-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;}
+.tag{font-size:10px;font-weight:500;padding:2px 9px;border-radius:999px;white-space:nowrap;}
+.tag-rec{background:var(--green-light);color:var(--green);}
+.tag-one{background:var(--purple-light);color:var(--purple);}
+.tag-unit{background:#ffeef8;color:#7a2d5e;}
+.tag-session{background:var(--teal-light);color:var(--teal);}
+.tag-auto{background:var(--green-light);color:var(--green);border:1px solid rgba(45,106,79,.3);}
+.tag-free-inc{background:var(--green-light);color:var(--green);}
+.svc-price{font-size:18px;font-weight:400;font-family:'Playfair Display',serif;color:var(--ink);}
+.svc-price span{font-size:11px;font-family:'DM Sans',sans-serif;color:var(--ink-muted);font-weight:400;}
+.badge-free{font-size:13px;font-weight:500;color:var(--green);}
+.badge-consult{font-size:12px;font-weight:500;color:var(--teal);text-decoration:underline;cursor:pointer;}
+.qty-row{display:flex;align-items:center;gap:6px;}
+.qty-btn{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(26,26,46,.18);background:#fff;font-size:16px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink);transition:all .15s;}
+.qty-btn:hover{background:var(--ink);color:#fff;border-color:var(--ink);}
+.qty-btn:disabled{opacity:.3;cursor:not-allowed;pointer-events:none;}
+.qty-val{font-size:14px;font-weight:500;min-width:28px;text-align:center;}
+.qty-subtotal{font-size:11px;color:var(--ink-muted);}
+.auto-label{font-size:10px;color:var(--green);font-weight:500;margin-top:2px;}
+.totals-card{background:#fceef7;color:var(--ink);border:1.5px solid rgba(181,130,170,.2);border-radius:var(--radius);padding:28px;margin-bottom:24px;}
+.totals-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:rgba(26,26,46,.55);margin-bottom:20px;}
+.totals-grid{display:grid;gap:16px;margin-bottom:20px;}
+.total-block-label{font-size:11px;color:rgba(26,26,46,.55);margin-bottom:4px;}
+.total-block-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--ink);line-height:1;}
+.total-block-val.accent{color:var(--accent-dark);}
+.total-block-val.savings{color:var(--green);}
+.total-block-sub{font-size:11px;color:rgba(26,26,46,.38);margin-top:4px;}
+.totals-divider-cot{border:none;border-top:1px solid rgba(181,130,170,.2);margin:20px 0;}
+.selected-list{font-size:12px;color:rgba(26,26,46,.55);line-height:1.9;}
+.selected-list span{color:var(--ink);}
+.empty-state{text-align:center;padding:40px 20px;color:var(--ink-muted);font-size:14px;}
+.empty-state p{margin-top:8px;font-size:12px;}
+.btn-download{display:block;width:100%;margin-top:20px;margin-bottom:0;padding:13px;border-radius:var(--radius-sm);background:rgba(181,130,170,.1);color:var(--ink);font-size:13px;font-weight:500;text-align:center;border:1.5px solid rgba(181,130,170,.25);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin-bottom:10px;}
+.btn-download:hover{background:rgba(181,130,170,.18);}
+.btn-wa-final{display:block;width:100%;margin-top:10px;padding:14px;border-radius:var(--radius);background:#25D366;color:#1A1A18;font-size:14px;font-weight:500;text-align:center;text-decoration:none;font-family:'DM Sans',sans-serif;transition:opacity .15s;}
+.btn-wa-final:hover{opacity:.88;}
+.popup-overlay-small{position:fixed;inset:0;background:rgba(26,26,46,.5);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
+.popup-overlay-small.open{display:flex;animation:fadeIn .2s ease;}
+.popup-box-small{background:#fceef7;border-radius:var(--radius);width:100%;max-width:400px;padding:28px;text-align:center;position:relative;animation:popIn .25s ease;}
+.popup-box-small .popup-icon{font-size:36px;margin-bottom:14px;}
+.popup-box-small .popup-title{font-family:'Playfair Display',serif;font-size:22px;color:var(--ink);margin-bottom:10px;}
+.popup-box-small .popup-body{font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:20px;}
+.popup-box-small .popup-btn{display:block;width:100%;padding:13px;border-radius:var(--radius-sm);background:var(--ink);color:#fff;font-size:14px;font-weight:500;text-align:center;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;}
+.popup-box-small .popup-btn:hover{opacity:.88;}
+
+/* ── FLOATING WA ────────────────────────────────── */
+.wa-float{position:fixed;bottom:80px;right:24px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.wa-float-bubble{background:#fff;border:1.5px solid rgba(45,106,79,.2);border-radius:14px 14px 0 14px;padding:10px 14px;font-size:12px;color:#1A3D2E;box-shadow:0 4px 20px rgba(0,0,0,.12);max-width:210px;line-height:1.5;display:none;}
+.wa-float-bubble.show{display:block;animation:bubbleIn .4s ease;}
+@keyframes bubbleIn{from{opacity:0;transform:scale(.9) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.wa-float-btn{width:56px;height:56px;border-radius:50%;background:#25D366;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,.4);transition:transform .2s,box-shadow .2s;text-decoration:none;}
+.wa-float-btn:hover{transform:scale(1.08);box-shadow:0 6px 28px rgba(37,211,102,.5);}
+.wa-float-btn svg{width:28px;height:28px;fill:#fff;}
+.wa-dot{position:absolute;top:-2px;right:-2px;width:14px;height:14px;border-radius:50%;background:var(--accent);border:2px solid var(--surface);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+
+@media print{
+  .wa-float,.progress-wrap,.filter-row,.discount-bar,.plat-row,.wa-banner-cot,.grabacion-notice,.btn-download,.btn-wa-final,.btn-rec-secondary,.btn-rec-primary,.btn-wa-rec{display:none!important;}
+  body{background:#fff;font-size:13px;}
+  .hero-cot,.hero-brief{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+@media(max-width:540px){
+  .hero-brief,.hero-cot{padding:40px 20px 36px;}
+  .plat-card{min-width:100%;}
+  .wa-float{bottom:70px;right:16px;}
+  .popup-choices{grid-template-columns:1fr;}
+  .rec-totals-grid{grid-template-columns:1fr;}
+}
+
+  .back-btn{display:none;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--ink);background:#fff;border:1.5px solid var(--border-strong);border-radius:999px;padding:8px 18px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s;margin:20px 24px 0;position:relative;z-index:10;}
+  .back-btn:hover{background:var(--surface);border-color:var(--ink);}
+</style>
+</head>
+<body>
+
+<!-- FLOATING WA -->
+<div class="wa-float" id="waFloat">
+  <div class="wa-float-bubble" id="waBubble">&iexcl;Hola! &iquest;Dudas? Con gusto te ayudo &#128522;</div>
+  <div style="position:relative">
+    <a class="wa-float-btn" href="https://wa.me/message/XZSPOAVOD3SVD1" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.529 5.845L.057 23.428a.5.5 0 0 0 .515.572l5.736-1.505A11.938 11.938 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.032-1.384l-.36-.214-3.733.979 1.001-3.625-.235-.374A9.808 9.808 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg>
+    </a>
+    <div class="wa-dot"></div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: BRIEF ═══════════════════════════════════════════ -->
+<div class="view active" id="view-brief">
+  <div class="hero-brief">
+    <div class="hero-tag">Brief de cliente</div>
+    <h1>Cu&eacute;ntame sobre <span style="color:#000">tu negocio</span></h1>
+    <p>Este formulario me ayuda a entender exactamente qu&eacute; necesit&aacute;s para dise&ntilde;ar una estrategia de redes sociales personalizada, sin paquetes gen&eacute;ricos.</p>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-label" id="progressLabel">0% completado</div>
+  </div>
+
+  <div class="form-body">
+    <form id="briefForm" novalidate>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">1</div>
+          <div><div class="section-title">Tu negocio</div><div class="section-subtitle">Informaci&oacute;n b&aacute;sica para conocerte mejor</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Nombre del negocio <span class="req">*</span></label><input type="text" id="nombre" placeholder="Ej: Pasteler&iacute;a La Dulce Vida" required><div class="error-msg" id="err-nombre">Este campo es requerido.</div></div>
+          <div class="field"><label>Tu nombre / rol <span class="req">*</span></label><input type="text" id="rol" placeholder="Ej: Mar&iacute;a, due&ntilde;a" required><div class="error-msg" id="err-rol">Este campo es requerido.</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Correo electr&oacute;nico <span class="req">*</span></label><input type="email" id="email" placeholder="hola@tunegocio.com" required><div class="error-msg" id="err-email">Ingres&aacute; un correo v&aacute;lido.</div></div>
+          <div class="field"><label>WhatsApp / tel&eacute;fono <span class="req">*</span></label><input type="text" id="telefono" required placeholder="+506 8888-0000">
+<div class="error-msg" id="err-telefono">Ingresá tu WhatsApp o teléfono.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;A qu&eacute; se dedica tu negocio? <span class="req">*</span><span class="hint">Describ&iacute;lo en tus propias palabras: qu&eacute; vend&eacute;s, c&oacute;mo funciona, qu&eacute; te hace diferente.</span></label><textarea id="descripcion" placeholder="Ej: Somos una pasteler&iacute;a artesanal especializada en pasteles personalizados para bodas y eventos." required></textarea><div class="error-msg" id="err-descripcion">Cont&aacute;nos un poco sobre tu negocio.</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Industria / categor&iacute;a <span class="req">*</span></label><select id="industria" required><option value="">Seleccion&aacute; una opci&oacute;n</option><option>Alimentos y bebidas</option><option>Moda y accesorios</option><option>Belleza y cuidado personal</option><option>Salud y bienestar</option><option>Servicios profesionales</option><option>Educaci&oacute;n y coaching</option><option>Tecnolog&iacute;a</option><option>Hogar y decoraci&oacute;n</option><option>Viajes y turismo</option><option>Entretenimiento</option><option>Otro</option></select><div class="error-msg" id="err-industria">Selecci&oacute;n&aacute; una industria.</div></div>
+          <div class="field"><label>&iquest;D&oacute;nde opera tu negocio? <span class="req">*</span></label><input type="text" id="ubicacion" required placeholder="Ej: San Jos&eacute;, Costa Rica / en l&iacute;nea">
+<div class="error-msg" id="err-ubicacion">Ingresá tu ubicación.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Sitio web u otros links</label><input type="url" id="web" placeholder="https://tunegocio.com"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">2</div>
+          <div><div class="section-title">Presencia actual en redes</div><div class="section-subtitle">&iquest;C&oacute;mo est&aacute;s hoy en redes sociales?</div></div>
+        </div>
+        <div class="field-group full" style="margin-bottom:20px;">
+          <div class="field"><label>&iquest;Cu&aacute;les redes sociales ten&eacute;s actualmente?</label><div class="pill-group" style="margin-top:4px;"><input type="checkbox" id="p-ig" name="redes" value="Instagram"><label for="p-ig">Instagram</label><input type="checkbox" id="p-tt" name="redes" value="TikTok"><label for="p-tt">TikTok</label><input type="checkbox" id="p-fb" name="redes" value="Facebook"><label for="p-fb">Facebook</label><input type="checkbox" id="p-yt" name="redes" value="YouTube"><label for="p-yt">YouTube</label><input type="checkbox" id="p-li" name="redes" value="LinkedIn"><label for="p-li">LinkedIn</label><input type="checkbox" id="p-ni" name="redes" value="Ninguna"><label for="p-ni">Ninguna todav&iacute;a</label></div></div>
+        </div>
+        <div class="network-block">
+          <div class="network-block-title"><span class="net-dot ig"></span> Instagram</div>
+          <div class="field-group triple">
+            <div class="field"><label>Usuario</label><input type="text" id="ig-user" required placeholder="@tunegocio"></div>
+            <div class="field"><label>Seguidores aprox.</label><input type="number" id="ig-seg" placeholder="Ej: 1500"></div>
+            <div class="field"><label>&iquest;Con qu&eacute; frecuencia public&aacute;s?</label><select id="ig-freq"><option value="">Seleccion&aacute;</option><option>No publico</option><option>Menos de 1 vez/semana</option><option>1-2 veces/semana</option><option>3-5 veces/semana</option><option>Todos los d&iacute;as</option></select></div>
+          </div>
+        </div>
+        <div class="network-block">
+          <div class="network-block-title"><span class="net-dot tt"></span> TikTok</div>
+          <div class="field-group triple">
+            <div class="field"><label>Usuario</label><input type="text" id="tt-user" placeholder="@tunegocio"></div>
+            <div class="field"><label>Seguidores aprox.</label><input type="number" id="tt-seg" placeholder="Ej: 800"></div>
+            <div class="field"><label>&iquest;Con qu&eacute; frecuencia public&aacute;s?</label><select id="tt-freq"><option value="">Seleccion&aacute;</option><option>No publico</option><option>Menos de 1 vez/semana</option><option>1-2 veces/semana</option><option>3-5 veces/semana</option><option>Todos los d&iacute;as</option></select></div>
+          </div>
+        </div>
+        <div class="field-group full" style="margin-top:8px;">
+          <div class="field"><label>&iquest;Qu&eacute; ha funcionado bien hasta ahora? &iquest;Qu&eacute; no ha funcionado?<span class="hint">Si no ten&eacute;s redes, pod&eacute;s saltear esta pregunta.</span></label><textarea id="que-funciono" placeholder="Ej: Los reels de detr&aacute;s de c&aacute;maras generan mucho engagement..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">3</div>
+          <div><div class="section-title">Objetivos y metas</div><div class="section-subtitle">&iquest;Hacia d&oacute;nde quer&eacute;s ir?</div></div>
+        </div>
+        <div class="field-group full" style="margin-bottom:20px;">
+          <div class="field"><label>&iquest;Cu&aacute;les son tus objetivos en redes sociales? <span class="req">*</span><span class="hint">Pod&eacute;s marcar todos los que apliquen.</span></label>
+            <div class="pill-group" style="margin-top:8px;">
+              <input type="checkbox" id="obj1" name="objetivo" value="Vender m&aacute;s"><label for="obj1">Vender m&aacute;s</label>
+              <input type="checkbox" id="obj2" name="objetivo" value="Construir marca"><label for="obj2">Construir marca</label>
+              <input type="checkbox" id="obj3" name="objetivo" value="Crear comunidad"><label for="obj3">Crear comunidad</label>
+              <input type="checkbox" id="obj4" name="objetivo" value="Atraer tr&aacute;fico web"><label for="obj4">Atraer tr&aacute;fico web</label>
+              <input type="checkbox" id="obj5" name="objetivo" value="Posicionarme como experto"><label for="obj5">Posicionarme como experto</label>
+              <input type="checkbox" id="obj6" name="objetivo" value="Generar leads"><label for="obj6">Generar leads</label>
+              <input type="checkbox" id="obj7" name="objetivo" value="Contenido viral"><label for="obj7">Contenido viral</label>
+            </div>
+          </div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;C&oacute;mo defin&iacute;s el &eacute;xito? <span class="req">*</span><span class="hint">S&eacute; espec&iacute;fico: "100 pedidos al mes", "10,000 seguidores en 6 meses", etc.</span></label><textarea id="exito" required placeholder="Escrib&iacute; aqu&iacute; tu visi&oacute;n de &eacute;xito..."></textarea>
+<div class="error-msg" id="err-exito">Contános cómo definís el éxito.</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>&iquest;En cu&aacute;nto tiempo esper&aacute;s ver resultados? <span class="req">*</span></label><select id="tiempo-resultados" required><option value="">Seleccion&aacute;</option><option>1-2 meses</option><option>3-6 meses</option><option>6-12 meses</option><option>Largo plazo (+1 a&ntilde;o)</option><option>No tengo expectativa de tiempo</option></select>
+<div class="error-msg" id="err-tiempo">Seleccióná una opción.</div></div>
+          <div class="field"><label>&iquest;Ten&eacute;s alguna fecha l&iacute;mite o lanzamiento pr&oacute;ximo?</label><input type="text" id="fecha-limite" placeholder="Ej: Lanzamiento 15 de marzo"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">4</div>
+          <div><div class="section-title">Tu audiencia ideal</div><div class="section-subtitle">&iquest;A qui&eacute;n le est&aacute;s hablando?</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>Rango de edad de tu cliente ideal <span class="req">*</span></label><select id="edad" required><option value="">Seleccion&aacute;</option><option>13-17 a&ntilde;os</option><option>18-24 a&ntilde;os</option><option>25-34 a&ntilde;os</option><option>35-44 a&ntilde;os</option><option>45-54 a&ntilde;os</option><option>55+ a&ntilde;os</option><option>Variado / todas las edades</option></select>
+<div class="error-msg" id="err-edad">Seleccióná el rango de edad.</div></div>
+          <div class="field"><label>G&eacute;nero predominante <span class="req">*</span></label><select id="genero" required><option value="">Seleccion&aacute;</option><option>Mayormente mujeres</option><option>Mayormente hombres</option><option>Mixto / ambos por igual</option><option>No aplica / diverso</option></select>
+<div class="error-msg" id="err-genero">Seleccióná una opción.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>Describ&iacute; a tu cliente ideal <span class="req">*</span><span class="hint">&iquest;Qu&eacute; hace? &iquest;Qu&eacute; le preocupa? &iquest;Por qu&eacute; te comprar&iacute;a?</span></label><textarea id="cliente-ideal" required placeholder="Ej: Mujeres de 28-40 a&ntilde;os, profesionales, que valoran la calidad sobre el precio..."></textarea>
+<div class="error-msg" id="err-cliente">Describí a tu cliente ideal.</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">5</div>
+          <div><div class="section-title">Competencia y referencias</div><div class="section-subtitle">Contexto del mercado e inspiraci&oacute;n</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;Qui&eacute;nes son tus principales competidores? <span class="req">*</span><span class="hint">Nombres, cuentas de IG/TikTok, o describ&iacute;los.</span></label><textarea id="competidores" required placeholder="Ej: @pastelesFlorencia, @sweetsbyLaura..."></textarea>
+<div class="error-msg" id="err-competidores">Ingresá al menos un competidor.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;Qu&eacute; te diferencia de tu competencia? <span class="req">*</span></label><textarea id="diferenciador" required placeholder="Ej: Usamos ingredientes 100% naturales, sin colorantes artificiales..."></textarea>
+<div class="error-msg" id="err-diferenciador">Contános qué te diferencia.</div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">6</div>
+          <div><div class="section-title">Contenido y recursos</div><div class="section-subtitle">&iquest;Con qu&eacute; contamos para crear?</div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>&iquest;Ten&eacute;s fot&oacute;grafo o vide&oacute;grafo propio? <span class="req">*</span></label><select id="fotografo" required><option value="">Seleccion&aacute;</option><option>S&iacute;, tenemos</option><option>A veces contratamos</option><option>No, lo tomar&iacute;a yo mismo/a</option><option>No tenemos, necesitamos ayuda</option></select>
+<div class="error-msg" id="err-fotografo">Seleccióná una opción.</div></div>
+          <div class="field"><label>&iquest;Cont&aacute;s con un manual de marca? <span class="req">*</span></label><select id="manual-marca" required><option value="">Seleccion&aacute;</option><option>S&iacute;, completo (logo, colores, tipograf&iacute;a)</option><option>Tengo algo b&aacute;sico (logo solamente)</option><option>No tenemos, hay que crearlo</option><option>Estamos trabajando en eso</option></select>
+<div class="error-msg" id="err-manual">Seleccióná una opción.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;Hay algo que definitivamente NO quer&eacute;s en tu comunicaci&oacute;n?</label><textarea id="no-quiero" placeholder="Ej: No quiero contenido pol&iacute;tico, nada muy agresivo en ventas..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">7</div>
+          <div><div class="section-title">Redes y expectativas</div><div class="section-subtitle">Qu&eacute; necesit&aacute;s que manejemos juntos</div></div>
+        </div>
+        <div class="field-group full" style="margin-bottom:20px;">
+          <div class="field"><label>&iquest;Qu&eacute; redes sociales quer&eacute;s gestionar?</label><div class="pill-group" style="margin-top:4px;"><input type="checkbox" id="g-ig" name="gestionar" value="Instagram"><label for="g-ig">Instagram</label><input type="checkbox" id="g-tt" name="gestionar" value="TikTok"><label for="g-tt">TikTok</label><input type="checkbox" id="g-fb" name="gestionar" value="Facebook"><label for="g-fb">Facebook</label><input type="checkbox" id="g-yt" name="gestionar" value="YouTube"><label for="g-yt">YouTube</label></div></div>
+        </div>
+        <div class="field-group">
+          <div class="field"><label>&iquest;Ten&eacute;s presupuesto para pauta / publicidad pagada? <span class="req">*</span></label><select id="presupuesto-pauta" required><option value="">Seleccion&aacute;</option><option>No por ahora</option><option>S&iacute;, menos de $100/mes</option><option>S&iacute;, $100-$300/mes</option><option>S&iacute;, $300-$700/mes</option><option>S&iacute;, m&aacute;s de $700/mes</option><option>A&uacute;n no lo s&eacute;</option></select>
+<div class="error-msg" id="err-pauta">Seleccióná una opción.</div></div>
+          <div class="field"><label>&iquest;Con qu&eacute; frecuencia quer&eacute;s reuniones / reportes?</label><select id="frecuencia-reuniones"><option value="">Seleccion&aacute;</option><option>Semanalmente</option><option>Cada 2 semanas</option><option>Mensualmente</option><option>Solo cuando sea necesario</option></select></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-num">8</div>
+          <div><div class="section-title">Presupuesto e informaci&oacute;n adicional</div><div class="section-subtitle">&Uacute;ltimos detalles para tu cotizaci&oacute;n</div></div>
+        </div>
+        <div class="info-box">No te preocup&eacute;s si no ten&eacute;s un n&uacute;mero exacto. Esta informaci&oacute;n me ayuda a dise&ntilde;ar una propuesta que tenga sentido para tu negocio.</div>
+        <div class="field-group">
+          <div class="field"><label>Rango de inversi&oacute;n mensual que ten&eacute;s en mente <span class="req">*</span></label><select id="presupuesto" required><option value="">Seleccion&aacute;</option><option>Menos de $200/mes</option><option>$200-$400/mes</option><option>$400-$700/mes</option><option>$700-$1,200/mes</option><option>M&aacute;s de $1,200/mes</option><option>No tengo idea a&uacute;n</option></select>
+<div class="error-msg" id="err-presupuesto">Seleccióná tu rango de inversión.</div></div>
+          <div class="field"><label>&iquest;Has trabajado antes con un social media manager? <span class="req">*</span></label><select id="experiencia-smm" required><option value="">Seleccion&aacute;</option><option>No, ser&iacute;a la primera vez</option><option>S&iacute;, fue una buena experiencia</option><option>S&iacute;, pero no fue lo que esperaba</option><option>Lo he intentado internamente</option></select>
+<div class="error-msg" id="err-experiencia">Seleccióná una opción.</div></div>
+        </div>
+        <div class="field-group full">
+          <div class="field"><label>&iquest;Hay algo m&aacute;s que quieras contarme?</label><textarea id="extra" placeholder="Lanzamientos pr&oacute;ximos, contexto especial, dudas, lo que quieras agregar..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="submit-area">
+        <h3>&iexcl;Ya casi terminamos!</h3>
+        <p>Una vez que env&iacute;es este brief, analizar&eacute; tu negocio y te preparar&eacute; una propuesta personalizada.</p>
+        <button type="button" class="btn-submit" onclick="handleBriefSubmit()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Enviar mi brief
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ═══ POPUP: ELEGIR CAMINO ════════════════════════════════ -->
+<div class="popup-overlay" id="popupChoice">
+  <div class="popup-box">
+    <div class="popup-icon-big">&#127881;</div>
+    <h2>&iexcl;<span id="popup-nombre">Hola</span>! Tu brief fue enviado</h2>
+    <p>&iquest;C&oacute;mo quer&eacute;s continuar con tu cotizaci&oacute;n?</p>
+    <div class="popup-choices">
+      <div class="choice-btn primary" onclick="goRecomendacion()">
+        
+        <span class="choice-title">Ver mi recomendaci&oacute;n personalizada</span>
+        <span class="choice-desc">La IA analiza tu brief y te sugiere el paquete ideal</span>
+      </div>
+      <div class="choice-btn secondary" onclick="goCotizador()">
+        
+        <span class="choice-title">Armar mi propio paquete</span>
+        <span class="choice-desc">Eleg&iacute; los servicios que quer&eacute;s y calc&aacute; tu precio</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VIEW: RECOMENDACION ══════════════════════════════════ -->
+<div class="view" id="view-recomendacion"><button class="back-btn" onclick="goBack()">&#8592; Volver</button>
+  <div class="hero-cot">
+    <div class="hero-cot-eyebrow">Recomendaci&oacute;n personalizada</div>
+    <h1>Tu paquete <em>ideal</em></h1>
+    <p>Basado en tu brief, analiz&eacute; tu negocio y eleg&iacute; los servicios que m&aacute;s te van a ayudar a crecer.</p>
+  </div>
+  <div class="rec-container" id="recContent">
+    <div class="loading-screen" id="recLoading">
+      <div class="spinner"></div>
+      <h3>Analizando tu negocio&hellip;</h3>
+      <p>Estoy revisando tu brief y preparando una recomendaci&oacute;n pensada especialmente para vos.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ VIEW: COTIZADOR ══════════════════════════════════════ -->
+<div class="view" id="view-cotizador"><button class="back-btn" onclick="goBack()">&#8592; Volver</button>
+  <div class="hero-cot">
+    <div class="hero-cot-eyebrow">Servicios de Social Media Management</div>
+    <h1>Arm&aacute; tu <em>cotizaci&oacute;n</em><br>a medida</h1>
+    <p>Selecci&oacute;n&aacute; los servicios que necesit&aacute;s y obt&eacute; tu precio estimado al instante.</p>
+  </div>
+  <div class="cot-container">
+    <div class="section-label-cot">&iquest;En qu&eacute; plataforma est&aacute;s?</div>
+    <div class="plat-row" id="platRow">
+      <div class="plat-card active" data-plat="igfb"><div class="plat-icon ig">&#128247;</div><div><div class="plat-name">IG + Facebook</div><div class="plat-sub">Meta &middot; Reels &middot; Stories</div></div></div>
+      <div class="plat-card" data-plat="tiktok"><div class="plat-icon tt">&#127925;</div><div><div class="plat-name">TikTok</div><div class="plat-sub">Videos cortos</div></div></div>
+      <div class="plat-card" data-plat="both"><div class="plat-icon both">&#128640;</div><div><div class="plat-name">Ambas</div><div class="plat-sub">Cotizaci&oacute;n especial</div></div></div>
+    </div>
+    <div class="wa-banner-cot" id="waBanner">
+      <div class="wa-circle"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.529 5.845L.057 23.428a.5.5 0 0 0 .515.572l5.736-1.505A11.938 11.938 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 0 1-5.032-1.384l-.36-.214-3.733.979 1.001-3.625-.235-.374A9.808 9.808 0 0 1 2.182 12C2.182 6.57 6.57 2.182 12 2.182S21.818 6.57 21.818 12 17.43 21.818 12 21.818z"/></svg></div>
+      <div class="wa-text-cot"><strong>&iexcl;Buena elecci&oacute;n!</strong> Para gesti&oacute;n en ambas plataformas armamos un paquete especial.</div>
+      <a class="wa-cta-cot" href="https://wa.me/message/XZSPOAVOD3SVD1" target="_blank">Escribir ahora</a>
+    </div>
+    <div class="discount-bar" id="discBar">
+      <div class="disc-top"><div class="disc-title">Descuento por volumen</div><div class="disc-badge" id="discBadge">Sin descuento</div></div>
+      <div class="disc-tiers">
+        <div class="disc-tier" id="tier1"><div class="disc-tier-pct">5%</div><div class="disc-tier-label">3 servicios</div></div>
+        <div class="disc-tier" id="tier2"><div class="disc-tier-pct">10%</div><div class="disc-tier-label">6 servicios</div></div>
+        <div class="disc-tier" id="tier3"><div class="disc-tier-pct">15%</div><div class="disc-tier-label">9 servicios</div></div>
+      </div>
+      <div class="disc-track"><div class="disc-fill" id="discFill" style="width:0%"></div></div>
+      <div class="disc-hint" id="discHint">Selecci&oacute;n&aacute; 3 servicios para obtener tu primer descuento</div>
+    </div>
+    <div class="filter-row" id="filters">
+      <button class="filter-btn active" data-cat="all">Todos</button>
+      <button class="filter-btn" data-cat="estrategia">Estrategia</button>
+      <button class="filter-btn" data-cat="contenido">Contenido</button>
+      <button class="filter-btn" data-cat="ads">Meta Ads</button>
+      <button class="filter-btn" data-cat="extra">Extras</button>
+    </div>
+    <div class="grabacion-notice" id="grabNotice">
+      <span style="font-size:22px">&#128205;</span>
+      <div style="font-size:13px;color:#1A1A18;line-height:1.6;"><strong>&iexcl;Importante!</strong> El precio de la grabaci&oacute;n var&iacute;a seg&uacute;n tu ubicaci&oacute;n. Continu&aacute; armando tu cotizaci&oacute;n, desc&aacute;rgala y env&iacute;amela por WhatsApp.</div>
+    </div>
+    <div class="services-grid" id="servicesGrid"></div>
+    <div class="totals-card">
+      <div class="totals-title">Tu cotizaci&oacute;n estimada</div>
+      <div id="totalsContent" class="empty-state"><div style="font-size:28px">&#9757;</div><p>Selecci&oacute;n&aacute; al menos un servicio para ver tu estimado</p></div>
+    </div>
+
+    <div style="text-align:center;font-size:12px;color:var(--ink-muted);line-height:1.7;">Los precios son estimados. El valor final puede variar seg&uacute;n el alcance espec&iacute;fico.<br>Todos los precios est&aacute;n expresados en <strong>USD</strong>.</div>
+  </div>
+</div>
+
+<!-- GRABACION POPUP -->
+<div class="popup-overlay-small" id="grabPopup" onclick="closeGrabPopup(event)">
+  <div class="popup-box-small">
+    <div class="popup-icon">&#128205;</div>
+    <div class="popup-title">&iexcl;Casi listo!</div>
+    <div class="popup-body">El precio de la grabaci&oacute;n var&iacute;a seg&uacute;n tu ubicaci&oacute;n.<br><br>Termin&aacute; de armar tu cotizaci&oacute;n, desc&aacute;rgala y env&iacute;amela por WhatsApp &mdash; te confirmo el costo exacto.</div>
+    <button class="popup-btn" onclick="closeGrabPopup()">Entendido, continuar</button>
+  </div>
+</div>
+
+<script>
+const WA = "message/XZSPOAVOD3SVD1";
+const TIERS = [{min:3,pct:5,id:"tier1"},{min:6,pct:10,id:"tier2"},{min:9,pct:15,id:"tier3"}];
+const IDX = {GUION:6,IMAGEN:7,GRABACION:8,EDICION:9,CONSULTORIA:16};
+
+const S = [
+  {cat:"estrategia",name:"Auditor\u00eda inicial de redes",freq:"unico",price:180,desc:"Benchmark, FODA, an\u00e1lisis de competencia y cliente ideal",plats:["igfb","tiktok"]},
+  {cat:"estrategia",name:"Estrategia de contenido",freq:"mensual",price:150,desc:"Pilares, formatos y objetivos mensuales",includes:"Incluye an\u00e1lisis de m\u00e9tricas org\u00e1nicas",plats:["igfb","tiktok"]},
+  {cat:"estrategia",name:"Optimizaci\u00f3n de perfil",freq:"unico",price:50,desc:"Bio, highlights, links y foto de perfil",plats:["igfb","tiktok"]},
+  {cat:"estrategia",name:"Manual de marca",freq:"unico",price:160,desc:"Colores, tipograf\u00eda y tono de voz",plats:["igfb","tiktok"]},
+  {cat:"estrategia",name:"Calendario de contenido mensual",freq:"mensual",price:25,desc:"Planeaci\u00f3n y organizaci\u00f3n de publicaciones",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"Ideas de historias para IG",freq:"mensual",price:60,desc:"Banco de ideas para stories",plats:["igfb"]},
+  {cat:"contenido",name:"Gui\u00f3n / copy",freq:"unidad",price:10,desc:"Por pieza: reel, carrusel o post",plats:["igfb","tiktok"],autoManaged:true},
+  {cat:"contenido",name:"Imagen / carrusel",freq:"unidad",price:15,desc:"Dise\u00f1o gr\u00e1fico por pieza",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"Grabaci\u00f3n de contenido",freq:"sesion",price:0,desc:"Precio seg\u00fan tu ubicaci\u00f3n \u2014 te lo confirmo al recibir tu cotizaci\u00f3n",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"Edici\u00f3n de video / reel",freq:"unidad",price:30,desc:"Por video, incluye captions y audio",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"Fotograf\u00eda de producto o marca",freq:"sesion",price:100,desc:"Sesi\u00f3n fotogr\u00e1fica",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"UGC (contenido de creador)",freq:"unidad",price:200,desc:"Por video: testimonios, unboxing, reels con creador",plats:["igfb","tiktok"]},
+  {cat:"contenido",name:"Mesa de trabajo",freq:"hora",price:25,desc:"Reuni\u00f3n virtual de revisi\u00f3n (1 hora m\u00e1ximo)",plats:["igfb","tiktok"]},
+  {cat:"ads",name:"Set up inicial de campa\u00f1a",freq:"unico",price:120,desc:"Por campa\u00f1a, var\u00eda seg\u00fan cantidad de anuncios",plats:["igfb"]},
+  {cat:"ads",name:"Gesti\u00f3n mensual de campa\u00f1as",freq:"mensual",price:100,desc:"Optimizaci\u00f3n continua \u2014 precio por campa\u00f1a activa",plats:["igfb"]},
+  {cat:"ads",name:"An\u00e1lisis de m\u00e9tricas de campa\u00f1a",freq:"mensual",price:60,desc:"Reporte de resultados de Meta Ads",plats:["igfb"]},
+  {cat:"extra",name:"Consultor\u00eda / asesor\u00eda",freq:"gratis",price:0,desc:"Incluida gratis al contratar cualquier servicio",plats:["igfb","tiktok"],alwaysIncluded:true},
+  {cat:"extra",name:"Capacitaci\u00f3n al cliente",freq:"consultar",price:0,desc:"Seg\u00fan la necesidad del cliente",plats:["igfb","tiktok"]},
+];
+
+// \u2500\u2500 VIEW MANAGEMENT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+let briefData = {};
+let navHistory = [];
+
+function showView(id){
+  const current = document.querySelector('.view.active');
+  if(current && current.id !== id) navHistory.push(current.id);
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateBackButtons();
+}
+
+function goBack(){
+  if(navHistory.length === 0) return;
+  const prev = navHistory.pop();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(prev).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateBackButtons();
+}
+
+function updateBackButtons(){
+  document.querySelectorAll('.back-btn').forEach(btn=>{
+    btn.style.display = navHistory.length > 0 ? 'inline-flex' : 'none';
+  });
+}
+
+// \u2500\u2500 BRIEF FORM \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const form = document.getElementById('briefForm');
+const fill = document.getElementById('progressFill');
+const lbl = document.getElementById('progressLabel');
+
+function updateProgress(){
+  const req = form.querySelectorAll('[required]');
+  let filled=0;
+  req.forEach(el=>{if(el.value.trim())filled++;});
+  const pct=Math.round((filled/req.length)*100);
+  fill.style.width=pct+'%';
+  lbl.textContent=pct+'% completado';
+}
+form.addEventListener('input',updateProgress);
+form.addEventListener('change',updateProgress);
+
+function validate(){
+  let valid=true;
+  const checks=[
+    {id:'nombre',err:'err-nombre',fn:v=>v.trim()},
+    {id:'rol',err:'err-rol',fn:v=>v.trim()},
+    {id:'email',err:'err-email',fn:v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())},
+    {id:'telefono',err:'err-telefono',fn:v=>v.trim()},
+    {id:'descripcion',err:'err-descripcion',fn:v=>v.trim().length>5},
+    {id:'industria',err:'err-industria',fn:v=>v!==''},
+    {id:'ubicacion',err:'err-ubicacion',fn:v=>v.trim()},
+    {id:'exito',err:'err-exito',fn:v=>v.trim().length>3},
+    {id:'tiempo-resultados',err:'err-tiempo',fn:v=>v!==''},
+    {id:'edad',err:'err-edad',fn:v=>v!==''},
+    {id:'genero',err:'err-genero',fn:v=>v!==''},
+    {id:'cliente-ideal',err:'err-cliente',fn:v=>v.trim().length>5},
+    {id:'competidores',err:'err-competidores',fn:v=>v.trim().length>2},
+    {id:'diferenciador',err:'err-diferenciador',fn:v=>v.trim().length>2},
+    {id:'fotografo',err:'err-fotografo',fn:v=>v!==''},
+    {id:'manual-marca',err:'err-manual',fn:v=>v!==''},
+    {id:'presupuesto-pauta',err:'err-pauta',fn:v=>v!==''},
+    {id:'presupuesto',err:'err-presupuesto',fn:v=>v!==''},
+    {id:'experiencia-smm',err:'err-experiencia',fn:v=>v!==''},
+  ];
+  // Check at least one objetivo selected
+  const objChecked = document.querySelectorAll('input[name="objetivo"]:checked').length > 0;
+  if(!objChecked){
+    const objGroup = document.querySelector('#obj1').closest('.field');
+    if(objGroup && !objGroup.querySelector('.obj-err')){
+      const err = document.createElement('div');
+      err.className = 'error-msg show obj-err';
+      err.textContent = 'Selecci\u00F3n\u00E1 al menos un objetivo.';
+      objGroup.appendChild(err);
+    }
+    if(valid) document.querySelector('#obj1').scrollIntoView({behavior:'smooth',block:'center'});
+    valid = false;
+  } else {
+    const existing = document.querySelector('.obj-err');
+    if(existing) existing.remove();
+  }
+  // Check at least one red a gestionar
+  const redesChecked = document.querySelectorAll('input[name="gestionar"]:checked').length > 0;
+  if(!redesChecked){
+    const redesGroup = document.querySelector('#g-ig').closest('.field');
+    if(redesGroup && !redesGroup.querySelector('.redes-err')){
+      const err = document.createElement('div');
+      err.className = 'error-msg show redes-err';
+      err.textContent = 'Selecci\u00F3n\u00E1 al menos una red social a gestionar.';
+      redesGroup.appendChild(err);
+    }
+    if(valid) document.querySelector('#g-ig').scrollIntoView({behavior:'smooth',block:'center'});
+    valid = false;
+  } else {
+    const existing = document.querySelector('.redes-err');
+    if(existing) existing.remove();
+  }
+  checks.forEach(c=>{
+    const el=document.getElementById(c.id),errEl=document.getElementById(c.err);
+    if(!c.fn(el.value)){el.classList.add('invalid');errEl.classList.add('show');if(valid)el.scrollIntoView({behavior:'smooth',block:'center'});valid=false;}
+    else{el.classList.remove('invalid');errEl.classList.remove('show');}
+  });
+  return valid;
+}
+
+function collectBriefData(){
+  const g = id => (document.getElementById(id)||{value:''}).value.trim();
+  const checkeds = name => [...document.querySelectorAll(`input[name="${name}"]:checked`)].map(c=>c.value).join(', ');
+  const radioVal = name => { const r=document.querySelector(`input[name="${name}"]:checked`); return r?r.value:''; };
+  return {
+    nombre: g('nombre'), rol: g('rol'), email: g('email'), telefono: g('telefono'),
+    descripcion: g('descripcion'), industria: g('industria'), ubicacion: g('ubicacion'), web: g('web'),
+    redes_actuales: checkeds('redes'),
+    ig_usuario: g('ig-user'), ig_seguidores: g('ig-seg'), ig_frecuencia: g('ig-freq'),
+    tt_usuario: g('tt-user'), tt_seguidores: g('tt-seg'), tt_frecuencia: g('tt-freq'),
+    que_funciono: g('que-funciono'),
+    objetivo_principal: checkeds('objetivo'),
+    exito: g('exito'), tiempo_resultados: g('tiempo-resultados'), fecha_limite: g('fecha-limite'),
+    edad_cliente: g('edad'), genero_cliente: g('genero'), cliente_ideal: g('cliente-ideal'),
+    competidores: g('competidores'), diferenciador: g('diferenciador'),
+    fotografo: g('fotografo'), manual_marca: g('manual-marca'), no_quiero: g('no-quiero'),
+    redes_gestionar: checkeds('gestionar'),
+    presupuesto_pauta: g('presupuesto-pauta'), frecuencia_reuniones: g('frecuencia-reuniones'),
+    presupuesto: g('presupuesto'), experiencia_smm: g('experiencia-smm'), extra: g('extra'),
+  };
+}
+
+function handleBriefSubmit(){
+  try {
+    briefData = collectBriefData();
+
+    // Basic validation - only truly required fields
+    var missing = [];
+    if(!briefData.nombre) missing.push('Nombre del negocio');
+    if(!briefData.rol) missing.push('Tu nombre / rol');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(briefData.email)) missing.push('Correo electr\u00F3nico v\u00E1lido');
+    if(!briefData.descripcion || briefData.descripcion.length < 5) missing.push('Descripci\u00F3n del negocio');
+    if(!briefData.industria) missing.push('Industria');
+
+    if(missing.length > 0){
+      alert('Por favor complet\u00E1 estos campos:\n\u2022 ' + missing.join('\n\u2022 '));
+      return;
+    }
+
+    // Show popup
+    var popupNombre = document.getElementById('popup-nombre');
+    var popupChoice = document.getElementById('popupChoice');
+    popupNombre.textContent = (briefData.nombre||'Hola').split(' ')[0];
+    popupChoice.classList.add('open');
+
+    // Send to Formspree in background
+    var data = new FormData();
+    Object.entries(briefData).forEach(function(kv){ if(kv[1]) data.append(kv[0], kv[1]); });
+    data.append('_subject', 'Nuevo brief: ' + briefData.nombre);
+    data.append('_replyto', briefData.email);
+    fetch('https://formspree.io/f/mzdopjop',{method:'POST',body:data,headers:{'Accept':'application/json'}}).catch(function(){});
+
+  } catch(err) {
+    alert('Error: ' + err.message);
+    console.error(err);
+  }
+}
+
+// \u2500\u2500 CHOICE POPUP \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function goRecomendacion(){
+  document.getElementById('popupChoice').classList.remove('open');
+  showView('view-recomendacion');
+  loadRecomendacion();
+}
+function goCotizador(){
+  document.getElementById('popupChoice').classList.remove('open');
+  showView('view-cotizador');
+  renderCot();
+}
+
+// \u2500\u2500 AI RECOMMENDATION \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+const SYSTEM_PROMPT = `Sos la asistente de an\u00e1lisis de Abigail Arias, una SMM especializada en emprendedores latinoamericanos que usa IA para entregar resultados de calidad a precio competitivo.
+
+Tu tarea: analizar el brief del cliente y recomendar el paquete de servicios m\u00e1s adecuado para su negocio y objetivos.
+
+CAT\u00c1LOGO DE SERVICIOS (usa los \u00edndices exactos):
+0. Auditor\u00eda inicial de redes \u2014 $180 \u2014 pago \u00fanico
+1. Estrategia de contenido \u2014 $150/mes \u2014 SIEMPRE incluir. Incluye an\u00e1lisis de m\u00e9tricas org\u00e1nicas.
+2. Optimizaci\u00f3n de perfil \u2014 $50 \u2014 pago \u00fanico
+3. Manual de marca \u2014 $160 \u2014 pago \u00fanico
+4. Calendario de contenido mensual \u2014 $25/mes
+5. Ideas de historias para IG \u2014 $60/mes \u2014 SOLO para clientes de IG/FB
+6. Gui\u00f3n / copy \u2014 $10/unidad \u2014 incluir con cantidad sugerida
+7. Imagen / carrusel \u2014 $15/unidad \u2014 incluir con cantidad sugerida
+8. Grabaci\u00f3n de contenido \u2014 precio variable \u2014 SOLO si el cliente lo pide expl\u00edcitamente
+9. Edici\u00f3n de video / reel \u2014 $30/unidad \u2014 incluir con cantidad sugerida
+10. Fotograf\u00eda de producto \u2014 $100/sesi\u00f3n \u2014 SOLO si tiene producto f\u00edsico
+11. UGC \u2014 $200/unidad \u2014 NO recomendar proactivamente
+12. Mesa de trabajo \u2014 $25/hora \u2014 incluir si el cliente quiere aprobar contenido
+13. Set up inicial de campa\u00f1a \u2014 $120 \u2014 SOLO si menciona presupuesto para pauta
+14. Gesti\u00f3n mensual de campa\u00f1as \u2014 $100/mes \u2014 SOLO si menciona presupuesto para pauta
+15. An\u00e1lisis de m\u00e9tricas de campa\u00f1a \u2014 $60/mes \u2014 SOLO si tiene ads activos
+(16 y 17 son gratis/consultar, no los incluyas)
+
+REGLAS IMPORTANTES:
+1. SIEMPRE recomendar \u00edndices 0 (auditor\u00eda) y 1 (estrategia). Son la base.
+2. SIEMPRE recomendar \u00edndice 2 (optimizaci\u00f3n de perfil) para emprendedores.
+3. Recomendar \u00edndice 3 (manual de marca) si el cliente NO tiene identidad visual completa.
+4. Recomendar \u00edndices 6, 7, 9 (gui\u00f3n, imagen, edici\u00f3n) con cantidades razonables seg\u00fan publicaciones semanales del cliente. Cantidad mensual = publicaciones por semana \u00d7 4.
+5. Recomendar \u00edndice 5 (historias IG) SOLO si gestiona Instagram o Facebook.
+6. Recomendar \u00edndices 13, 14, 15 (ads) SOLO si el cliente menciona presupuesto para pauta Y dicho presupuesto es "S\u00ed".
+7. Recomendar \u00edndice 10 (fotograf\u00eda) SOLO si la industria implica productos f\u00edsicos.
+8. NO recomendar \u00edndice 11 (UGC) proactivamente.
+9. Recomendar \u00edndice 12 (mesa de trabajo) si el cliente quiere revisar contenido antes de publicar.
+10. Grabaci\u00f3n (\u00edndice 8): incluirla si el cliente indica que NO tiene fot\u00f3grafo/vide\u00f3grafo propio, dice "necesitamos ayuda", "no tenemos", o si su contenido requiere videos y no tiene c\u00f3mo producirlos. El precio es variable seg\u00fan ubicaci\u00f3n, siempre aclar\u00e1 esto en nota_grabacion.
+11. Si el campo fotografo del brief dice "No tenemos, necesitamos ayuda" o "No, lo tomar\u00eda yo mismo/a", SIEMPRE incluir grabaci\u00f3n (\u00edndice 8) en las recomendaciones.
+
+TONO: C\u00e1lido, profesional, cercano. En espa\u00f1ol latinoamericano. Que el cliente sienta que fue escuchado y que la recomendaci\u00f3n es para \u00e9l/ella, no gen\u00e9rica.
+
+Respond\u00e9 SOLO con un objeto JSON v\u00e1lido, sin texto adicional, sin backticks, sin markdown. Estructura exacta:
+{
+  "saludo": "string corto y personal dirigido al cliente por nombre",
+  "analisis": "3-4 oraciones que demuestran que le\u00edste y entendiste CADA detalle del brief. Menciona el tipo de negocio, su objetivo principal, su situaci\u00f3n actual en redes, y el reto m\u00e1s importante que tendr\u00e1 que resolver. S\u00e9 espec\u00edfico, no gen\u00e9rico.",
+  "recomendaciones": [
+    {"idx": 0, "qty": 1, "razon": "Explicaci\u00f3n directa y espec\u00edfica de por qu\u00e9 este servicio es clave para ESTE cliente en particular, basada en su brief. Mencion\u00e1 algo concreto de su negocio, objetivo o situaci\u00f3n. 1-2 oraciones, tono cercano."}
+  ],
+  "nota_grabacion": "Solo incluir si grabaci\u00f3n aplica. Si no, usar string vac\u00edo.",
+  "cierre": "1-2 oraciones motivadoras y personales para cerrar."
+}`;
+
+async function loadRecomendacion(){
+  const container = document.getElementById('recContent');
+  container.innerHTML = '<div class="loading-screen"><div class="spinner"></div><h3>Analizando tu brief\u2026</h3><p>Estoy revisando cada detalle de tu negocio para prepararte la mejor propuesta.</p></div>';
+  setTimeout(function(){ renderRecomendacion(buildRecomendacion(briefData)); }, 1800);
+}
+
+function buildRecomendacion(d){
+  const nombre = d.nombre || 'tu negocio';
+  const primerNombre = (d.rol||d.nombre||'').split(/[,\s]/)[0];
+  const industria = d.industria || '';
+  const descripcion = d.descripcion || '';
+  const objetivo = d.objetivo_principal || '';
+  const manualMarca = d.manual_marca || '';
+  const fotografo = d.fotografo || '';
+  const redesGestionar = d.redes_gestionar || '';
+  const presupuestoAds = d.presupuesto_pauta || '';
+  const presupuesto = d.presupuesto || '';
+  const clienteIdeal = d.cliente_ideal || '';
+  const exito = d.exito || '';
+  const diferenciador = d.diferenciador || '';
+
+  const tieneIG = redesGestionar.includes('Instagram') || redesGestionar.includes('Facebook');
+  const tieneTT = redesGestionar.includes('TikTok');
+  const tieneAmbas = tieneIG && tieneTT;
+  const soloTT = tieneTT && !tieneIG;
+  const platLabel = tieneAmbas ? 'IG + Facebook & TikTok' : (soloTT ? 'TikTok' : 'Instagram + Facebook');
+  const platNote = tieneAmbas ? 'Para ambas plataformas el precio var\u00eda. Envi\u00e1me tu cotizaci\u00f3n.' : '';
+  const tieneAds = presupuestoAds.includes('$') || presupuestoAds.toLowerCase().includes('s\u00ed');
+  const necesitaMarca = !manualMarca.includes('completo');
+  const necesitaGrabacion = fotografo.includes('No') || fotografo.includes('necesitamos') || fotografo.includes('mismo/a') || fotografo.includes('ayuda');
+  const esProductoFisico = ['Alimentos','Moda','Hogar','Belleza','Pasteler','Ropa','Artesanal','Cosm\u00e9t'].some(c=>industria.includes(c)||descripcion.toLowerCase().includes(c.toLowerCase()));
+  const presupuestoBajo = presupuesto.includes('200') || presupuesto.includes('400');
+
+  const obj_map = {ventas:'vender m\u00e1s',marca:'construir tu marca',comunidad:'crear comunidad',trafico:'generar tr\u00e1fico web',posicionamiento:'posicionarte como referente en tu industria'};
+  const obj_texto = objetivo.split(',').map(o=>obj_map[o.trim()]||o.trim()).filter(Boolean).join(' y ') || 'crecer en redes';
+
+  let analisis = `${nombre} tiene algo genuinamente diferente que ofrecer: `;
+  if(diferenciador) analisis += `${diferenciador.split('.')[0].toLowerCase()}. `;
+  else if(descripcion) analisis += `${descripcion.split('.')[0].toLowerCase()}. `;
+  analisis += `Tu objetivo de ${obj_texto} es m\u00e1s que alcanzable, pero requiere una estrategia clara y contenido que conecte de verdad con tu cliente ideal. `;
+  if(clienteIdeal) analisis += `Ese cliente que describ\u00eds toma decisiones de compra bas\u00e1ndose en lo que ve en redes \u2014 hay que asegurarnos de que lo que ve los enamora.`;
+
+  const recs = [];
+  recs.push({idx:0,qty:1,razon:`Antes de publicar una sola pieza de contenido, necesitamos saber exactamente d\u00f3nde est\u00e1s parada: c\u00f3mo est\u00e1 tu presencia actual, qu\u00e9 est\u00e1 haciendo tu competencia y cu\u00e1les son tus oportunidades reales en el mercado de ${industria.toLowerCase()}.`});
+  recs.push({idx:1,qty:1,razon:`Sin estrategia, el contenido bonito no vende. Definimos tus pilares, formatos y objetivos mensuales \u2014 y cada mes revisamos las m\u00e9tricas para ajustar lo que funciona y lo que no. As\u00ed es como se logra ${obj_texto}.`});
+  recs.push({idx:2,qty:1,razon:`Tu perfil es la primera impresi\u00f3n que alguien tiene de ${nombre}. Bio clara, foto profesional, highlights organizados y link correcto \u2014 peque\u00f1os cambios que generan confianza inmediata.`});
+
+  if(necesitaMarca){
+    const marcaDesc = manualMarca.includes('b\u00e1sico')||manualMarca.includes('logo') ? 'Ten\u00e9s el logo pero falta la identidad completa' : 'No ten\u00e9s una identidad visual definida todav\u00eda';
+    recs.push({idx:3,qty:1,razon:`${marcaDesc}. Colores, tipograf\u00eda y tono de voz consistentes son lo que hace que ${nombre} se vea profesional y genere confianza instant\u00e1nea en cada punto de contacto con tu cliente.`});
+  }
+
+  recs.push({idx:4,qty:1,razon:`Con un calendario claro sab\u00e9s exactamente qu\u00e9 se publica cada d\u00eda, evitamos la improvisaci\u00f3n y el contenido siempre acompa\u00f1a tus objetivos comerciales.`});
+
+  if(tieneIG){
+    recs.push({idx:5,qty:1,razon:`Las historias son el canal m\u00e1s directo para conectar con tu audiencia a diario y mantener ${nombre} presente en su mente. Un banco de ideas mensual te garantiza consistencia sin estr\u00e9s.`});
+  }
+
+  // \u2500\u2500 TENDENCIAS ACTUALES (actualizado: Mayo 2026) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+  // IG/FB: Reels > Carruseles > Imagenes estaticas
+  // TikTok: Videos cortos (15-60s) dominan, luego videos medianos
+  // Proporcion recomendada: 50% video, 35% carrusel, 15% imagen
+  var totalPiezas = presupuestoBajo ? 12 : 18;
+  var qtyVideos = soloTT ? Math.round(totalPiezas * 0.75) : Math.round(totalPiezas * 0.50);
+  var qtyContenido = soloTT ? Math.round(totalPiezas * 0.25) : Math.round(totalPiezas * 0.35);
+  var qtyImagenes = soloTT ? 0 : Math.max(1, totalPiezas - qtyVideos - qtyContenido);
+  if(tieneAmbas){ qtyVideos = Math.round(totalPiezas * 0.60); qtyContenido = Math.round(totalPiezas * 0.30); qtyImagenes = Math.max(1, totalPiezas - qtyVideos - qtyContenido); }
+  var qtyGuiones = qtyContenido + qtyVideos;
+  // \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+  recs.push({idx:7,qty:qtyImagenes||qtyContenido,razon:`Dise\u00f1os que representan la est\u00e9tica y los valores de ${nombre} en cada publicaci\u00f3n. Cada pieza pensada espec\u00edficamente para atraer${clienteIdeal ? ' a '+clienteIdeal.split('.')[0].toLowerCase() : ' a tu cliente ideal'}.`});
+
+  if(necesitaGrabacion){
+    recs.push({idx:8,qty:1,razon:`${fotografo.includes('mismo/a') ? 'Si vos misma vas a grabar el contenido, coordino la sesi\u00f3n con direcci\u00f3n profesional para que el resultado se vea impecable' : 'No ten\u00e9s qui\u00e9n grabe y eso no puede ser un obst\u00e1culo para tu crecimiento \u2014 lo resolvemos'}. El precio var\u00eda seg\u00fan tu ubicaci\u00f3n y te lo confirmo al recibir tu cotizaci\u00f3n.`});
+  }
+
+  recs.push({idx:9,qty:qtyVideos,razon:`Los reels son el formato con mayor alcance org\u00e1nico hoy en d\u00eda. Edici\u00f3n profesional, captions y audio pensado para tu audiencia \u2014 cada video con el potencial de llegar a nuevos clientes.`});
+  recs.push({idx:6,qty:qtyGuiones,razon:`Cada pieza de contenido necesita un gui\u00f3n o copy que conecte emocionalmente y lleve a la acci\u00f3n. Redactado con el tono y la personalidad de ${nombre} para que suene genuino, no rob\u00f3tico.`});
+
+  if(esProductoFisico){
+    recs.push({idx:10,qty:1,razon:`${nombre} vende algo que entra por los ojos. Una sesi\u00f3n fotogr\u00e1fica profesional de tus productos es una inversi\u00f3n que se usa durante meses en toda tu comunicaci\u00f3n.`});
+  }
+
+  recs.push({idx:12,qty:1,razon:`Antes de publicar cualquier contenido, lo revisamos juntas. As\u00ed te asegur\u00e1s de que todo representa exactamente como quer\u00e9s que se vea ${nombre} \u2014 con tiempo para ajustes antes de que llegue a tu audiencia.`});
+
+  if(tieneAds){
+    recs.push({idx:13,qty:1,razon:`Con el presupuesto que mencionaste, configuramos campa\u00f1as que llegan exactamente a quien vos quer\u00e9s. El set up se paga una sola vez por campa\u00f1a.`});
+    recs.push({idx:14,qty:1,razon:`Una vez activas las campa\u00f1as, las optimizamos continuamente para que cada d\u00f3lar invertido en pauta genere el mayor retorno posible.`});
+    recs.push({idx:15,qty:1,razon:`Cada mes recib\u00eds un reporte claro de c\u00f3mo rinden tus anuncios y qu\u00e9 ajustes hicimos para mejorar los resultados.`});
+  }
+
+  const notaGrab = necesitaGrabacion ? `El precio de la grabaci\u00f3n var\u00eda seg\u00fan tu ubicaci\u00f3n. Una vez que me env\u00edes tu cotizaci\u00f3n por WhatsApp te confirmo el costo exacto y coordinamos los detalles.` : '';
+
+  let cierre = `Este paquete est\u00e1 armado espec\u00edficamente para ${nombre} y lo que quer\u00e9s lograr. `;
+  if(exito) cierre += `Tu meta de "${exito.split('.')[0]}" es totalmente alcanzable con esta base. `;
+  cierre += `\u00bfArranc\u00e1mos?`;
+
+  recs.push({idx:16,qty:1,razon:'Incluida sin costo adicional. Ten\u00E9s acceso a consultas y asesor\u00EDa personalizada siempre que la necesit\u00E9s.'});
+    return { saludo:`\u00a1Hola${primerNombre?', '+primerNombre:''}! Le\u00ed tu brief con cuidado.`, analisis, recomendaciones:recs, nota_grabacion:notaGrab, cierre, platLabel:platLabel, platNote:platNote };
+}
+
+// Rec qty state
+const recQty = {};
+
+function freqTagRec(freq){
+  const cls={mensual:'tag-rec-sm',unico:'tag-one-sm',unidad:'tag-unit-sm',sesion:'tag-rec-sm',hora:'tag-rec-sm'}[freq]||'tag-one-sm';
+  const lbl={mensual:'recurrente',unico:'pago \u00fanico',unidad:'por unidad',sesion:'por sesi\u00f3n',hora:'por hora'}[freq]||'';
+  return `<span class="tag-sm ${cls}">${lbl}</span>`;
+}
+
+function recChangeQty(idx,delta){}
+function updateRecTotals(){
+  let monthly=0,oneTime=0;
+  (window._recItems||[]).forEach(r=>{
+    const s=S[r.idx];if(!s)return;
+    const qty=recQty[r.idx]||r.qty||1;
+    if(s.freq==='mensual')monthly+=s.price;
+    else if(s.freq==='unico')oneTime+=s.price;
+    else if(s.freq==='unidad')monthly+=s.price*qty;
+    else if(s.freq==='sesion'||s.freq==='hora')monthly+=s.price;
+  });
+  const mEl=document.getElementById('rec-total-monthly');
+  const oEl=document.getElementById('rec-total-onetime');
+  const oBlock=document.getElementById('rec-onetime-block');
+  if(mEl)mEl.textContent='$'+monthly;
+  if(oEl)oEl.textContent='$'+oneTime;
+  if(oBlock)oBlock.style.display=oneTime>0?'block':'none';
+}
+
+
+function recPriceHTML(s, idx, qty){
+  if(s.price===0&&s.freq==='sesion') return '<div style="font-size:13px;color:var(--teal);font-weight:500">A confirmar</div>';
+  if(s.freq==='unidad'){
+    const sub = s.price * qty;
+    return '<div style="text-align:right"><div class="svc-price">$'+s.price+' <span>/ u.</span></div><div style="font-size:12px;color:var(--ink-muted);margin-top:4px">'+qty+' unidades</div><div class="qty-subtotal">= $'+sub+'</div></div>';
+  }
+  const suf={mensual:'/mes',unico:' \u00FAnico',sesion:'/sesi\u00F3n',hora:'/hora'}[s.freq]||'';
+  return '<div class="svc-price">$'+s.price+' <span>'+suf+'</span></div>';
+}
+
+
+function renderRecomendacion(rec){
+  const recItems = rec.recomendaciones||[];
+  window._recItems = recItems;
+  recItems.forEach(r=>{ recQty[r.idx] = r.qty||1; });
+
+  // Auto-sync guion = imagen + edicion
+  const rImg = recQty[7]||0, rEd = recQty[9]||0;
+  if(rImg+rEd>0) recQty[6] = rImg+rEd;
+
+  // Count paidservices for discount
+  function recCountServices(){
+    return recItems.filter(r=>{
+      const s=S[r.idx];
+      return s && s.freq!=='gratis' && s.freq!=='consultar';
+    }).length;
+  }
+  function recDiscount(){
+    const n=recCountServices();
+    let p=0;
+    TIERS.forEach(t=>{if(n>=t.min)p=t.pct;});
+    return p;
+  }
+
+  // Calculate totals with discount
+  let monthly=0, oneTime=0;
+  recItems.forEach(r=>{
+    const s=S[r.idx]; if(!s) return;
+    const qty=recQty[r.idx]||1;
+    if(s.price===0) return;
+    if(s.freq==='mensual') monthly+=s.price;
+    else if(s.freq==='unico') oneTime+=s.price;
+    else if(s.freq==='unidad') monthly+=s.price*qty;
+    else if(s.freq==='sesion'||s.freq==='hora') monthly+=s.price;
+  });
+
+  const disc=recDiscount();
+  const dM=disc>0?Math.round(monthly*disc/100):0;
+  const dO=disc>0?Math.round(oneTime*disc/100):0;
+  const fM=monthly-dM, fO=oneTime-dO;
+
+  // Build discount bar
+  const n=recCountServices();
+  const tier1reached=n>=3, tier2reached=n>=6, tier3reached=n>=9;
+  const progress=Math.min(n/9*100,100);
+  const discBadge=disc>0?`${disc}% de descuento incluido \u{1F389}`:'Sin descuento';
+  const discBadgeCls=disc>0?'earned':'';
+  const nextTier=TIERS.find(t=>n<t.min);
+  let discHint='';
+  if(nextTier){const l=nextTier.min-n;discHint=disc>0?`\u00a1Ten\u00e9s <strong>${disc}% OFF</strong>! Con ${l} servicio${l>1?'s':''} m\u00e1s sub\u00eds al ${nextTier.pct}%`:`Agreg\u00e1 ${l} servicio${l>1?'s':''} m\u00e1s para obtener un <strong>${nextTier.pct}% de descuento</strong>`;}
+  else{discHint=`<strong>\u00a1M\u00e1ximo descuento alcanzado! \u{1F3C6}</strong>`;}
+
+  const discBarHTML=`<div class="discount-bar${disc>0?' active-discount':''}">
+    <div class="disc-top"><div class="disc-title">Descuento por volumen</div><div class="disc-badge ${discBadgeCls}">${discBadge}</div></div>
+    <div class="disc-tiers">
+      <div class="disc-tier${tier1reached?' reached':''}"><div class="disc-tier-pct">5%</div><div class="disc-tier-label">3 servicios</div></div>
+      <div class="disc-tier${tier2reached?' reached':''}"><div class="disc-tier-pct">10%</div><div class="disc-tier-label">6 servicios</div></div>
+      <div class="disc-tier${tier3reached?' reached':''}"><div class="disc-tier-pct">15%</div><div class="disc-tier-label">9 servicios</div></div>
+    </div>
+    <div class="disc-track"><div class="disc-fill" style="width:${progress}%"></div></div>
+    <div class="disc-hint">${discHint}</div>
+  </div>`;
+
+  // Build cards
+  let cardsHTML = recItems.map(r=>{
+    const s=S[r.idx]; if(!s) return'';
+    const qty=recQty[r.idx]||1;
+    const grabNota = (r.idx===8 && rec.nota_grabacion)
+      ? `<div style="margin-top:10px;background:#fceef7;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a1a2e;line-height:1.6;display:flex;gap:8px;align-items:flex-start;"><span>&#128205;</span><span>${rec.nota_grabacion}</span></div>`
+      : '';
+    return `<div class="rec-card highlight">
+      <div class="rec-check"><svg viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="#1a1a2e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="rec-card-body"><div class="rec-card-name">${s.name} ${freqTagRec(s.freq)}</div><div class="rec-card-reason">${r.razon}</div>${grabNota}</div>
+      <div class="rec-card-right">${recPriceHTML(s,r.idx,qty)}</div>
+    </div>`;
+  }).join('');
+
+  const notaHTML=rec.nota_grabacion?`<div class="rec-note"><span>\u{1F4CD}</span><div>${rec.nota_grabacion}</div></div>`:'';
+
+  // Totals \u2014 same style as cotizador
+  const strM=disc>0?` <span style="font-size:13px;color:rgba(26,26,46,.35);text-decoration:line-through">$${monthly}</span>`:'';
+  const strO=disc>0?` <span style="font-size:13px;color:rgba(26,26,46,.35);text-decoration:line-through">$${oneTime}</span>`:'';
+  let cols=`<div><div class="total-block-label">Mensual estimado</div><div class="total-block-val accent">$${fM}${strM}</div><div class="total-block-sub">servicios recurrentes</div></div>`;
+  if(oneTime>0) cols+=`<div><div class="total-block-label">Pago \u00fanico</div><div class="total-block-val">$${fO}${strO}</div><div class="total-block-sub">se paga una sola vez</div></div>`;
+  if(disc>0) cols+=`<div><div class="total-block-label">Ahorr\u00e1s (${disc}% OFF)</div><div class="total-block-val savings">$${dM+dO}</div><div class="total-block-sub">sobre el total</div></div>`;
+  const colCount=[true,oneTime>0,disc>0].filter(Boolean).length;
+
+  // List
+  const lines=[];
+  recItems.forEach(r=>{
+    const s=S[r.idx];if(!s||s.price===0)return;
+    const qty=recQty[r.idx]||1;
+    if(s.freq==='mensual') lines.push(`<div><span>${s.name}</span> &middot; $${s.price}/mes</div>`);
+    else if(s.freq==='unico') lines.push(`<div><span>${s.name}</span> &middot; $${s.price} \u00fanico</div>`);
+    else if(s.freq==='unidad') lines.push(`<div><span>${s.name}</span> &middot; $${s.price}&times;${qty}=$${s.price*qty}</div>`);
+    else if(s.freq==='sesion'||s.freq==='hora') lines.push(`<d<div style="margin-bottom:16px;display:flex;align-items:center;gap:10px;"><span style="font-size:11px;font-weight:500;text-transform:uppercase;color:#888;margin-right:6px;">Plataforma:</span><span style="background:#b5db59;color:#1a1a2e;font-size:13px;font-weight:500;padding:4px 16px;border-radius:999px;">${rec.platLabel||'Instagram + Facebook'}</span>${rec.platNote?'<div style="margin-top:8px;background:#fceef7;border-radius:8px;padding:10px 14px;font-size:12px;color:#1a1a2e;">'+rec.platNote+'</div>':''}</div>
+    iv><span>${s.name}</span> &middot; $${s.price}/${s.freq}</div>`);
+    else lines.push(`<div><span>${s.name}</span> &middot; A confirmar</div>`);
+  });
+
+  const waMsg=encodeURIComponent('\u00a1Hola! Complet\u00e9 el brief y quiero proceder con mi paquete recomendado. Mi negocio es: '+(briefData.nombre||''));
+
+  
+  var trendText = soloTT ? 'Videos cortos 15-60s dominan TikTok. Priorizamos video sobre todo.' : tieneAmbas ? 'Reels #1 en IG + Videos en TikTok. Carruseles 2do formato. M\u00ednimo de im\u00e1genes est\u00e1ticas.' : 'Reels = mayor alcance org\u00e1nico en IG. Carruseles para engagement. Im\u00e1genes est\u00e1ticas en m\u00ednimo. Proporci\u00f3n: 50% video / 35% carrusel / 15% imagen.';
+  var trendMonth = new Date().toLocaleDateString('es-CR',{month:'long',year:'numeric'});
+  document.getElementById('recContent').innerHTML=`
+    <div class="rec-analysis">
+      <div class="rec-analysis-label">An\u00e1lisis de tu negocio</div>
+      <div style="font-size:15px;color:var(--ink);font-weight:500;margin-bottom:6px;">${rec.saludo}</div>
+      <div class="rec-analysis-text">${rec.analisis}</div>
+    </div>
+    ${discBarHTML}
+    <div class="<div style="background:#f7fde8;border:1.5px solid rgba(181,219,89,.4);border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;gap:10px;"><span>&#128200;</span><div><div style="font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:#4a7a2e;margin-bottom:4px">Tendencias consideradas &mdash; ${trendMonth}</div><div style="font-size:12px;color:#1a1a2e;line-height:1.7">${trendText}</div></div></div>\n    rec-services-title">Tu paquete recomendado</div>
+    <div class="rec-services-sub">Estos son los servicios que m\u00e1s te van a ayudar a alcanzar tus objetivos:</div>
+    ${cardsHTML}
+    <div class="totals-card">
+      <div class="totals-title">Tu cotizaci\u00f3n estimada</div>
+      <div class="totals-grid" style="grid-template-columns:repeat(${colCount},1fr)">${cols}</div>
+      <hr class="totals-divider-cot">
+      <div class="selected-list">${lines.join('')}</div>
+      <hr class="totals-divider-cot">
+      <div class="rec-closing" style="font-size:14px;color:var(--ink-soft);line-height:1.7;margin-bottom:16px;">${rec.cierre}</div>
+      <hr class="totals-divider-cot">
+      <button class="btn-download" id="recPrintBtn">&#8595; Descargar cotizaci\u00F3n en PDF</button>
+      <a class="btn-wa-final" href="https://wa.me/${WA}?text=${waMsg}" target="_blank">Enviar cotizaci\u00F3n por WhatsApp</a>
+      <button class="btn-rec-secondary" onclick="goCotizador()">Prefiero armar mi propio paquete</button>
+    </div>`;
+}
+
+// \u2500\u2500 COTIZADOR LOGIC \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+let plat="igfb", filter="all";
+const chk={}, qty={};
+S.forEach((_,i)=>{chk[i]=false;qty[i]=1;});
+
+function syncAuto(){
+  const eQ=chk[IDX.EDICION]?qty[IDX.EDICION]:0;
+  const iQ=chk[IDX.IMAGEN]?qty[IDX.IMAGEN]:0;
+  const autoG=eQ+iQ;
+  if(autoG>0){chk[IDX.GUION]=true;qty[IDX.GUION]=autoG;}
+  else if(S[IDX.GUION].autoManaged){chk[IDX.GUION]=false;qty[IDX.GUION]=1;}
+  chk[IDX.CONSULTORIA]=S.some((s,i)=>chk[i]&&s.freq!=="gratis"&&s.freq!=="consultar");
+}
+
+function countSelected(){return S.filter((s,i)=>chk[i]&&s.freq!=="gratis"&&s.freq!=="consultar"&&(plat==="both"||s.plats.includes(plat))).length;}
+function currentDiscount(){const n=countSelected();let p=0;TIERS.forEach(t=>{if(n>=t.min)p=t.pct;});return p;}
+
+function updateDiscount(){
+  const n=countSelected(),pct=currentDiscount();
+  TIERS.forEach(t=>document.getElementById(t.id).classList.toggle("reached",n>=t.min));
+  document.getElementById("discFill").style.width=Math.min(n/9*100,100)+"%";
+  const badge=document.getElementById("discBadge"),bar=document.getElementById("discBar");
+  if(pct>0){bar.classList.add("active-discount");badge.classList.add("earned");badge.textContent=pct+"% de descuento activo \u{1F389}";}
+  else{bar.classList.remove("active-discount");badge.classList.remove("earned");badge.textContent="Sin descuento";}
+  const next=TIERS.find(t=>n<t.min);
+  const hint=document.getElementById("discHint");
+  if(next){const l=next.min-n;hint.innerHTML=pct>0?`\u00a1Ten\u00e9s <strong>${pct}% OFF</strong>! Sum\u00e1 ${l} servicio${l>1?"s":""} m\u00e1s para subir al ${next.pct}%`:`Selecion\u00e1 ${l} servicio${l>1?"s":""} m\u00e1s para obtener tu primer <strong>${next.pct}% de descuento</strong>`;}
+  else{hint.innerHTML=`<strong>\u00a1M\u00e1ximo descuento alcanzado! \u{1F3C6}</strong>`;}
+}
+
+function updateGrabNotice(){
+  const el=document.getElementById("grabNotice");
+  if(el)el.classList.toggle("show",!!chk[IDX.GRABACION]);
+}
+
+function freqC(f){return{mensual:"tag-rec",unico:"tag-one",unidad:"tag-unit",sesion:"tag-session",hora:"tag-session"}[f]||"tag-one";}
+function freqL(f){return{mensual:"recurrente",unico:"pago \u00fanico",unidad:"por unidad",sesion:"por sesi\u00f3n",hora:"por hora"}[f]||f;}
+
+function priceHTML(s,i){
+  if(s.alwaysIncluded&&chk[i])return`<span class="badge-free">\u2713 Incluida</span>`;
+  if(s.freq==="consultar")return`<span class="badge-consult" onclick="window.open('https://wa.me/${WA}','_blank')">Consultar &rarr;</span>`;
+  if(s.freq==="gratis")return`<span class="badge-free">Gratis \u2713</span>`;
+  if(s.freq==="unidad"){
+    const isAuto=s.autoManaged&&(chk[IDX.EDICION]||chk[IDX.IMAGEN]);
+    const lock=isAuto?"disabled":"";
+    return`<div style="text-align:right"><div class="svc-price">$${s.price} <span>/ u.</span></div><div class="qty-row" style="justify-content:flex-end;margin-top:6px"><button class="qty-btn" data-op="minus" data-idx="${i}" ${lock}>&minus;</button><div class="qty-val" id="qty-${i}">${qty[i]}</div><button class="qty-btn" data-op="plus" data-idx="${i}" ${lock}>+</button></div><div class="qty-subtotal" id="sub-${i}">= $${s.price*qty[i]}</div>${isAuto?'<div class="auto-label">\u26a1 Auto</div>':""}</div>`;
+  }
+  if(s.price===0&&s.freq==="sesion")return`<div class="svc-price" style="font-size:14px;font-family:'DM Sans',sans-serif;color:var(--teal)">A confirmar</div>`;
+  const suf={mensual:"/mes",unico:" \u00fanico",sesion:"/sesi\u00f3n",hora:"/hora"}[s.freq]||"";
+  return`<div class="svc-price">$${s.price} <span>${suf}</span></div>`;
+}
+
+function renderCot(){
+  syncAuto();
+  const grid=document.getElementById("servicesGrid");
+  if(!grid)return;
+  grid.innerHTML="";
+  [{key:"estrategia",label:"Estrategia"},{key:"contenido",label:"Contenido"},{key:"ads",label:"Meta Ads"},{key:"extra",label:"Extras"}].forEach(({key,label})=>{
+    if(filter!=="all"&&filter!==key)return;
+    const vis=S.filter((s,i)=>s.cat===key&&(plat==="both"||s.plats.includes(plat)));
+    if(!vis.length)return;
+    const hdr=document.createElement("div");hdr.className="section-header-cot";hdr.textContent=label;grid.appendChild(hdr);
+    vis.forEach(s=>{
+      const i=S.indexOf(s);
+      const isAlways=s.alwaysIncluded&&chk[i];
+      const isAuto=s.autoManaged&&(chk[IDX.EDICION]||chk[IDX.IMAGEN]);
+      const canClick=!isAlways&&!isAuto&&s.freq!=="consultar";
+      let cls="service-card";
+      if(isAlways)cls+=" always-included";
+      else if(isAuto)cls+=" auto-selected";
+      else if(chk[i])cls+=" selected";
+      if(canClick)cls+=" clickable";
+      let tagHTML="";
+      if(isAlways)tagHTML=`<span class="tag tag-free-inc">incluida gratis</span>`;
+      else if(isAuto)tagHTML=`<span class="tag tag-auto">\u26a1 auto</span>`;
+      else if(s.freq!=="consultar"&&s.freq!=="gratis")tagHTML=`<span class="tag ${freqC(s.freq)}">${freqL(s.freq)}</span>`;
+      const card=document.createElement("div");
+      card.className=cls;card.dataset.idx=i;
+      const showCheck=s.freq!=="consultar";
+      card.innerHTML=`${showCheck?`<div class="check-box"><svg width="13" height="10" viewBox="0 0 13 10" fill="none"><path d="M1 5L4.5 8.5L12 1" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>`:""}
+        <div class="svc-info"><div class="svc-name">${s.name}</div><div class="svc-desc">${s.desc}</div>${s.includes?`<div class="svc-includes">${s.includes}</div>`:""}</div>
+        <div class="svc-right">${tagHTML}${priceHTML(s,i)}</div>`;
+      if(canClick){card.addEventListener("click",e=>{if(e.target.classList.contains("qty-btn"))return;chk[i]=!chk[i];renderCot();if(i===IDX.GRABACION&&chk[i])openGrabPopup();});}
+      grid.appendChild(card);
+    });
+  });
+  grid.querySelectorAll(".qty-btn:not([disabled])").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      e.stopPropagation();
+      const i=+btn.dataset.idx;
+      if(btn.dataset.op==="plus")qty[i]=Math.min(qty[i]+1,99);
+      else qty[i]=Math.max(qty[i]-1,1);
+      if(i===IDX.IMAGEN||i===IDX.EDICION){renderCot();return;}
+      document.getElementById("qty-"+i).textContent=qty[i];
+      document.getElementById("sub-"+i).textContent="= $"+(S[i].price*qty[i]);
+      renderTotals();updateDiscount();
+    });
+  });
+  updateDiscount();updateGrabNotice();renderTotals();
+}
+
+function renderTotals(){
+  const tc=document.getElementById("totalsContent");
+  if(!tc)return;
+  const sel=S.map((s,i)=>({s,i})).filter(({s,i})=>chk[i]&&s.freq!=="gratis"&&s.freq!=="consultar"&&(plat==="both"||s.plats.includes(plat)));
+  if(!sel.length){tc.innerHTML=`<div class="empty-state"><div style="font-size:28px">&#9757;</div><p>Selecion\u00e1 al menos un servicio para ver tu estimado</p></div>`;return;}
+  let monthly=0,one=0;const lines=[];
+  sel.forEach(({s,i})=>{
+    if(s.freq==="mensual"){monthly+=s.price;lines.push({name:s.name,val:`$${s.price}/mes`});}
+    else if(s.freq==="unico"){one+=s.price;lines.push({name:s.name,val:`$${s.price} \u00fanico`});}
+    else if(s.freq==="unidad"){const sub=s.price*qty[i];monthly+=sub;lines.push({name:s.name,val:`$${s.price}\u00d7${qty[i]}=$${sub}`});}
+    else if(s.freq==="sesion"||s.freq==="hora"){lines.push({name:s.name,val:`$${s.price}/${s.freq}`});}
+  });
+  const disc=currentDiscount();
+  const dM=disc>0?Math.round(monthly*disc/100):0,dO=disc>0?Math.round(one*disc/100):0;
+  const fM=monthly-dM,fO=one-dO;
+  const strM=disc>0?` <span style="font-size:13px;color:rgba(26,26,46,.35);text-decoration:line-through">$${monthly}</span>`:"";
+  const strO=disc>0?` <span style="font-size:13px;color:rgba(26,26,46,.35);text-decoration:line-through">$${one}</span>`:"";
+  let cols=`<div><div class="total-block-label">Mensual estimado</div><div class="total-block-val accent">$${fM}${strM}</div><div class="total-block-sub">servicios recurrentes</div></div>`;
+  if(one>0)cols+=`<div><div class="total-block-label">Pago \u00fanico</div><div class="total-block-val">$${fO}${strO}</div><div class="total-block-sub">se paga una sola vez</div></div>`;
+  if(disc>0)cols+=`<div><div class="total-block-label">Ahorr\u00e1s (${disc}% OFF)</div><div class="total-block-val savings">$${dM+dO}</div><div class="total-block-sub">sobre el total</div></div>`;
+  const colCount=[true,one>0,disc>0].filter(Boolean).length;
+  const listHTML=lines.map(l=>`<div><span>${l.name}</span> &middot; ${l.val}</div>`).join("");
+  tc.innerHTML=`
+    <div class="totals-grid" style="grid-template-columns:repeat(${colCount},1fr)">${cols}</div>
+    <hr class="totals-divider-cot">
+    <div class="selected-list">${listHTML}</div>
+    <hr class="totals-divider-cot">
+    <button class="btn-download" id="cotPrintBtn">&#8595; Descargar cotizaci\u00F3n en PDF</button>
+    <a class="btn-wa-final" href="https://wa.me/${WA}" target="_blank">Enviar cotizaci\u00F3n por WhatsApp</a>
+`;
+}
+
+// \u2500\u2500 PLATFORM + FILTER EVENTS \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+document.getElementById("platRow").addEventListener("click",e=>{
+  const c=e.target.closest(".plat-card");if(!c)return;
+  plat=c.dataset.plat;
+  document.querySelectorAll(".plat-card").forEach(x=>x.classList.remove("active","active-both"));
+  c.classList.add(plat==="both"?"active-both":"active");
+  document.getElementById("waBanner").classList.toggle("show",plat==="both");
+  renderCot();
+});
+document.getElementById("filters").addEventListener("click",e=>{
+  if(!e.target.dataset.cat)return;
+  filter=e.target.dataset.cat;
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+  e.target.classList.add("active");
+  renderCot();
+});
+
+// \u2500\u2500 GRAB POPUP \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function openGrabPopup(){document.getElementById("grabPopup").classList.add("open");document.body.style.overflow="hidden";}
+function closeGrabPopup(e){if(e&&e.target!==document.getElementById("grabPopup"))return;document.getElementById("grabPopup").classList.remove("open");document.body.style.overflow="";}
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeGrabPopup();document.getElementById("popupChoice").classList.remove("open");}});
+
+// \u2500\u2500 WA FLOAT \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+setTimeout(()=>{
+  const b=document.getElementById("waBubble");b.classList.add("show");
+  setTimeout(()=>b.classList.remove("show"),5000);
+},5000);
+document.getElementById("waFloat").addEventListener("click",()=>document.getElementById("waBubble").classList.remove("show"));
+
+updateProgress();
+
+// \u2500\u2500 TEST DATA AUTOFILL (quitar antes de publicar) \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+function fillTestData(){
+  const set = (id, val) => { const el=document.getElementById(id); if(el){ el.value=val; el.dispatchEvent(new Event('input')); el.dispatchEvent(new Event('change')); }};
+  const check = id => { const el=document.getElementById(id); if(el&&!el.checked){ el.click(); }};
+
+  set('nombre', 'Pasteler\u00EDa La Dulce Vida');
+  set('rol', 'Mar\u00EDa, due\u00F1a');
+  set('email', 'maria@dulcevida.com');
+  set('telefono', '+506 8888-0000');
+  set('descripcion', 'Somos una pasteler\u00EDa artesanal especializada en pasteles personalizados para bodas y eventos. Trabajamos por pedido con ingredientes naturales, sin colorantes artificiales.');
+  set('industria', 'Alimentos y bebidas');
+  set('ubicacion', 'San Jos\u00E9, Costa Rica');
+  set('web', 'https://dulcevida.com');
+  set('ig-user', '@dulcevida.cr');
+  set('ig-seg', '2500');
+  set('ig-freq', '1-2 veces/semana');
+  set('que-funciono', 'Los reels de detr\u00E1s de c\u00E1maras generan mucho engagement. Las fotos de producto tienen poco alcance.');
+  check('obj1'); check('obj2');
+  set('exito', 'Llegar a 10,000 seguidores en 6 meses y duplicar los pedidos mensuales.');
+  set('tiempo-resultados', '3-6 meses');
+  set('fecha-limite', 'Temporada navide\u00F1a diciembre 2026');
+  set('edad', '25-34 a\u00F1os');
+  set('genero', 'Mayormente mujeres');
+  set('cliente-ideal', 'Mujeres de 25-40 a\u00F1os, profesionales, que valoran la calidad sobre el precio y buscan experiencias \u00FAnicas para sus eventos especiales.');
+  set('competidores', '@pastelesFlorencia, @sweetsbyLaura. Tambi\u00E9n pasteler\u00EDas en centros comerciales.');
+  set('diferenciador', 'Ingredientes 100% naturales, personalizaci\u00F3n total de cada pedido y respuesta en menos de 2 horas.');
+  set('fotografo', 'No tenemos, necesitamos ayuda');
+  set('manual-marca', 'Tengo algo b\u00E1sico (logo solamente)');
+  set('no-quiero', 'No quiero contenido pol\u00EDtico ni mensajes muy agresivos en ventas.');
+  check('g-ig'); check('g-fb');
+  set('presupuesto-pauta', 'No por ahora');
+  set('frecuencia-reuniones', 'Mensualmente');
+  set('presupuesto', '$200-$400/mes');
+  set('experiencia-smm', 'No, ser\u00EDa la primera vez');
+  set('extra', 'Tenemos un lanzamiento de nueva l\u00EDnea de pasteles veganos en agosto 2026.');
+
+  updateProgress();
+  console.log('\u2705 Datos de prueba cargados');
+}
+
+// Boton flotante de test
+// \u2500\u2500 FIN TEST DATA \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+
+
+function printQuote(){
+  var el = document.getElementById('recContent');
+  var el2 = document.getElementById('totalsContent');
+  var src = null;
+  if(el && el.innerText.length > 50 && el.innerText.indexOf('Analizando') === -1) src = el;
+  else if(el2 && el2.innerText.length > 50 && el2.innerText.indexOf('Selecci') === -1) src = el2;
+  if(!src){ alert('Primero complet\u00E1 tu cotizaci\u00F3n.'); return; }
+  var w = window.open('', '_blank');
+  if(!w){ alert('Permiti\u00E9 las ventanas emergentes e intent\u00E1 de nuevo.'); return; }
+  w.document.write('<html><head><meta charset="UTF-8"><title>Cotizaci\u00F3n Social Media</title>');
+  w.document.write('<style>');
+  w.document.write('*{box-sizing:border-box;margin:0;padding:0}');
+  w.document.write('body{font-family:sans-serif;background:#fff;color:#1a1a2e;padding:48px;max-width:720px;margin:0 auto}');
+  w.document.write('.pdf-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:32px;padding-bottom:20px;border-bottom:2px solid #b5db59}');
+  w.document.write('.pdf-title{font-family:serif;font-size:26px;color:#1a1a2e;margin-bottom:4px}');
+  w.document.write('.pdf-sub{font-size:13px;color:#888}');
+  w.document.write('.pdf-date{font-size:12px;color:#aaa;text-align:right}');
+  w.document.write('.totals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:20px 0;background:#fceef7;border-radius:12px;padding:20px}');
+  w.document.write('.total-block-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}');
+  w.document.write('.total-block-val{font-family:serif;font-size:26px;color:#1a1a2e;line-height:1}');
+  w.document.write('.total-block-val.accent{color:#7ab82e}.total-block-val.savings{color:#2D6A4F}');
+  w.document.write('.total-block-sub{font-size:11px;color:#aaa;margin-top:4px}');
+  w.document.write('.selected-list{font-size:13px;color:#555;line-height:2.2}');
+  w.document.write('.selected-list span{color:#1a1a2e;font-weight:500}');
+  w.document.write('.rec-card{border:1px solid #f0e8f0;border-radius:10px;padding:14px 16px;margin-bottom:10px;background:#fafafa}');
+  w.document.write('.rec-card-name{font-size:14px;font-weight:500;color:#1a1a2e;margin-bottom:4px}');
+  w.document.write('.rec-card-reason{font-size:12px;color:#666;line-height:1.6}');
+  w.document.write('.rec-analysis{background:#fceef7;border-left:3px solid #ffccef;border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:20px}');
+  w.document.write('.rec-analysis-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}');
+  w.document.write('.rec-analysis-text{font-size:13px;color:#1a1a2e;line-height:1.7}');
+  w.document.write('.rec-services-title{font-family:serif;font-size:18px;margin-bottom:4px;margin-top:24px}');
+  w.document.write('.rec-services-sub{font-size:12px;color:#888;margin-bottom:14px}');
+  w.document.write('.rec-card-right{margin-top:8px}');
+  w.document.write('.svc-price{font-family:serif;font-size:16px;color:#1a1a2e}');
+  w.document.write('.svc-price span{font-size:11px;font-family:sans-serif;color:#888}');
+  w.document.write('.tag,.tag-sm,.tag-rec,.tag-one,.tag-unit,.tag-session{font-size:10px;padding:2px 8px;border-radius:99px;background:#f0f0f0;color:#555;display:inline-block;margin-left:6px;vertical-align:middle}');
+  w.document.write('.totals-title{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}');
+  w.document.write('hr,.totals-divider-cot{border:none;border-top:1px solid #eee;margin:18px 0}');
+  w.document.write('.rec-check,.btn-download,.btn-wa-final,.btn-rec-secondary,.discount-bar,.disc-track,.disc-tiers,.disc-badge,.disc-hint,.rec-note,.totals-card .totals-title{display:none!important}');
+  w.document.write('.totals-card{background:#fceef7;border-radius:12px;padding:24px;margin-top:20px}');
+  w.document.write('.pdf-footer{margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-size:11px;color:#bbb;text-align:center}');
+  w.document.write('@media print{@page{margin:20mm}body{padding:0}button,a.btn-wa-final{display:none!important}}');
+  w.document.write('</style></head><body>');
+  w.document.write('<div class="pdf-header">');
+  w.document.write('<div><div class="pdf-title">Cotizaci\u00F3n de Social Media</div><div class="pdf-sub">Preparada especialmente para vos</div></div>');
+  w.document.write('<div class="pdf-date">Generada el ' + new Date().toLocaleDateString('es-CR') + '</div>');
+  w.document.write('</div>');
+  w.document.write(src.innerHTML);
+  w.document.write('<div class="pdf-footer">Este documento es un estimado. El precio final puede variar seg\u00FAn el alcance espec\u00EDfico del proyecto.</div>');
+  w.document.write('<' + '/body><' + '/html>');
+  w.document.close();
+  w.focus();
+  setTimeout(function(){ w.print(); }, 800);
+}
+
+
+
+
+// Print button delegation
+document.addEventListener('click', function(e){
+  var t = e.target;
+  if(t && (t.id==='recPrintBtn'||t.id==='cotPrintBtn'||
+     (t.classList.contains('btn-download')&&(t.textContent.includes('Descargar')||t.textContent.includes('PDF'))))){
+    e.preventDefault();
+    printQuote();
+  }
+});
+
+</script>
+</body>
+</html>
